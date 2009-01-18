@@ -9,6 +9,9 @@ namespace PartCover.Framework.Reports
 {
     public class NCoverReportWriter : IReportWriter
     {
+
+        private const string NCOVER_DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
+
         public virtual void WriteReport(CoverageReport report, TextWriter writer)
         {
             XmlDocument xml = new XmlDocument();
@@ -18,8 +21,8 @@ namespace PartCover.Framework.Reports
             root.Attributes.Append(xml.CreateAttribute("driverVersion")).Value = VersionString(GetHelperAssembly().GetName().Version);
 
             // FIXME: Need start and end times
-            root.Attributes.Append(xml.CreateAttribute("startTime")).Value = DateTime.Now.ToString();
-            root.Attributes.Append(xml.CreateAttribute("measureTime")).Value = DateTime.Now.ToString();
+            root.Attributes.Append(xml.CreateAttribute("startTime")).Value = DateTime.Now.ToString(NCOVER_DATE_FORMAT);
+            root.Attributes.Append(xml.CreateAttribute("measureTime")).Value = DateTime.Now.ToString(NCOVER_DATE_FORMAT);
 
             foreach (CoverageReport.AssemblyDescriptor assembly in report.assemblies)
             {
