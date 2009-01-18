@@ -5,12 +5,9 @@ using System.Windows.Forms;
 
 using PartCover.Browser.Dialogs;
 using PartCover.Browser.Properties;
-using PartCover.Browser.Resources;
 using PartCover.Browser.Stuff;
-using PartCover.Framework.Stuff;
-using PartCover.Framework.Walkers;
+using PartCover.Framework.Reports;
 using PartCover.Browser.Api;
-using PartCover.Browser.Features;
 using PartCover.Browser.Helpers;
 
 namespace PartCover.Browser

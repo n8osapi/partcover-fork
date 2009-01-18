@@ -46,17 +46,6 @@ namespace PartCover.Framework
             {
             }
 
-            public ArgumentOption(string key, ActivateHandler activator, bool optional, string arguments,
-                                  string description)
-                : this(key, null, activator, optional, arguments, description)
-            {
-            }
-
-            public ArgumentOption(string key, OptionHandler handler, bool optional, string arguments, string description)
-                : this(key, handler, null, optional, arguments, description)
-            {
-            }
-
             public ArgumentOption(string key, OptionHandler handler, ActivateHandler activator, bool optional,
                                   string arguments, string description)
             {
@@ -73,90 +62,90 @@ namespace PartCover.Framework
 
         private static readonly ArgumentOption[] Options =
             {
-                new ArgumentOption("--target", readTarget),
-                new ArgumentOption("--version", readVersion),
-                new ArgumentOption("--help", readHelp),
-                new ArgumentOption("--target-work-dir", readTargetWorkDir),
-                new ArgumentOption("--generate", readGenerateSettingsFile),
-                new ArgumentOption("--log", readLogLevel),
-                new ArgumentOption("--target-args", readTargetArgs),
-                new ArgumentOption("--include", readInclude),
-                new ArgumentOption("--exclude", readExclude),
-                new ArgumentOption("--output", readOutput),
-                new ArgumentOption("--reportFormat", readReportFormat),
-                new ArgumentOption("--settings", readSettingsFile),
+                new ArgumentOption("--target", ReadTarget),
+                new ArgumentOption("--version", ReadVersion),
+                new ArgumentOption("--help", ReadHelp),
+                new ArgumentOption("--target-work-dir", ReadTargetWorkDir),
+                new ArgumentOption("--generate", ReadGenerateSettingsFile),
+                new ArgumentOption("--log", ReadLogLevel),
+                new ArgumentOption("--target-args", ReadTargetArgs),
+                new ArgumentOption("--include", ReadInclude),
+                new ArgumentOption("--exclude", ReadExclude),
+                new ArgumentOption("--output", ReadOutput),
+                new ArgumentOption("--reportFormat", ReadReportFormat),
+                new ArgumentOption("--settings", ReadSettingsFile),
             };
 
         private ArgumentOption currentOption;
 
         #region settings readers
 
-        private static void readTarget(WorkSettings settings, string value)
+        private static void ReadTarget(WorkSettings settings, string value)
         {
             if (!File.Exists(value))
                 throw new SettingsException("Cannot find target (" + value + ")");
             settings.targetPath = Path.GetFullPath(value);
         }
 
-        private static void readGenerateSettingsFile(WorkSettings settings, string value)
+        private static void ReadGenerateSettingsFile(WorkSettings settings, string value)
         {
             settings.generateSettingsFileName = value;
         }
 
-        private static void readHelp(WorkSettings settings)
+        private static void ReadHelp(WorkSettings settings)
         {
             settings.printLongHelp = true;
         }
 
-        private static void readVersion(WorkSettings settings)
+        private static void ReadVersion(WorkSettings settings)
         {
             settings.printVersion = true;
         }
 
-        private static void readTargetWorkDir(WorkSettings settings, string value)
+        private static void ReadTargetWorkDir(WorkSettings settings, string value)
         {
             if (!Directory.Exists(value))
                 throw new SettingsException("Cannot find target working dir (" + value + ")");
             settings.targetWorkingDir = Path.GetFullPath(value);
         }
 
-        private static void readSettingsFile(WorkSettings settings, string value)
+        private static void ReadSettingsFile(WorkSettings settings, string value)
         {
             if (!File.Exists(value))
                 throw new SettingsException("Cannot find settings file (" + value + ")");
             settings.settingsFile = value;
         }
 
-        private static void readOutput(WorkSettings settings, string value)
+        private static void ReadOutput(WorkSettings settings, string value)
         {
             if (value.Length > 0) settings.outputFile = value;
         }
 
-        private static void readReportFormat(WorkSettings settings, string value)
+        private static void ReadReportFormat(WorkSettings settings, string value)
         {
             if (value.Length > 0) settings.reportFormat = value;
         }
 
-        private static void readExclude(WorkSettings settings, string value)
+        private static void ReadExclude(WorkSettings settings, string value)
         {
             if (value.Length > 0) settings.excludeItems.Add(value);
         }
 
-        private static void readInclude(WorkSettings settings, string value)
+        private static void ReadInclude(WorkSettings settings, string value)
         {
             if (value.Length > 0) settings.includeItems.Add(value);
         }
 
-        private static void readTargetArgs(WorkSettings settings, string value)
+        private static void ReadTargetArgs(WorkSettings settings, string value)
         {
             settings.targetArgs = value;
         }
 
-        private static void readLogLevel(WorkSettings settings, string value)
+        private static void ReadLogLevel(WorkSettings settings, string value)
         {
             try
             {
-                settings.logLevel = int.Parse(value, CultureInfo.InvariantCulture);
+                settings.logLevel = Int32.Parse(value, CultureInfo.InvariantCulture);
             }
             catch (Exception ex)
             {
@@ -177,7 +166,7 @@ namespace PartCover.Framework
 
             foreach (string arg in args)
             {
-                ArgumentOption nextOption = getOptionHandler(arg);
+                ArgumentOption nextOption = GetOptionHandler(arg);
                 if (nextOption != null)
                 {
                     currentOption = nextOption;
@@ -236,7 +225,7 @@ namespace PartCover.Framework
             return false;
         }
 
-        private static ArgumentOption getOptionHandler(string arg)
+        private static ArgumentOption GetOptionHandler(string arg)
         {
             foreach (ArgumentOption o in Options)
             {

@@ -1,10 +1,8 @@
 
 namespace PartCover.Framework.Walkers
 {
-    public sealed class CoverageReportHelper
+    public static class CoverageReportHelper
     {
-        private CoverageReportHelper() { }
-
         public static string[] SplitNamespaces(string typedefName)
         {
             return typedefName.Split('.');

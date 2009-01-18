@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using PartCover.Framework.Walkers;
 
 namespace PartCover.Framework
@@ -14,59 +11,59 @@ namespace PartCover.Framework
             this.connector = connector;
         }
 
-        void IConnectorActionCallback.DriverConnected() { connector.ProcessCallback.writeStatus("driver connected successfully"); }
+        void IConnectorActionCallback.DriverConnected() { connector.ProcessCallback.WriteStatus("driver connected successfully"); }
 
-        void IConnectorActionCallback.DriverSendRules() { connector.ProcessCallback.writeStatus("send rules to the driver"); }
+        void IConnectorActionCallback.DriverSendRules() { connector.ProcessCallback.WriteStatus("send rules to the driver"); }
 
-        void IConnectorActionCallback.DriverWaitEoIConfirm() { connector.ProcessCallback.writeStatus("wait for rules confirm"); }
+        void IConnectorActionCallback.DriverWaitEoIConfirm() { connector.ProcessCallback.WriteStatus("wait for rules confirm"); }
 
-        void IConnectorActionCallback.FunctionsCount(uint count) { connector.ProcessCallback.writeStatus(string.Format("functions count {0}", count)); }
+        void IConnectorActionCallback.FunctionsCount(uint count) { connector.ProcessCallback.WriteStatus(string.Format("functions count {0}", count)); }
 
-        void IConnectorActionCallback.FunctionsReceiveBegin() { connector.ProcessCallback.writeStatus("functions loading is being started"); }
+        void IConnectorActionCallback.FunctionsReceiveBegin() { connector.ProcessCallback.WriteStatus("functions loading is being started"); }
 
-        void IConnectorActionCallback.FunctionsReceiveEnd() { connector.ProcessCallback.writeStatus("functions loading is complete"); }
+        void IConnectorActionCallback.FunctionsReceiveEnd() { connector.ProcessCallback.WriteStatus("functions loading is complete"); }
 
-        void IConnectorActionCallback.FunctionsReceiveStat(uint index) { connector.ProcessCallback.writeStatus(string.Format("functions loaded: {0}", index)); }
+        void IConnectorActionCallback.FunctionsReceiveStat(uint index) { connector.ProcessCallback.WriteStatus(string.Format("functions loaded: {0}", index)); }
 
-        void IConnectorActionCallback.InstrumentDataReceiveBegin() { connector.ProcessCallback.writeStatus("instrument data is being received"); }
+        void IConnectorActionCallback.InstrumentDataReceiveBegin() { connector.ProcessCallback.WriteStatus("instrument data is being received"); }
 
-        void IConnectorActionCallback.InstrumentDataReceiveCountersAsm(string name, string mod, uint typeDefCount) { connector.ProcessCallback.writeStatus(string.Format("load assembly {0} ({1} types)", name, typeDefCount)); }
+        void IConnectorActionCallback.InstrumentDataReceiveCountersAsm(string name, string mod, uint typeDefCount) { connector.ProcessCallback.WriteStatus(string.Format("load assembly {0} ({1} types)", name, typeDefCount)); }
 
-        void IConnectorActionCallback.InstrumentDataReceiveCountersAsmCount(uint asmCount) { connector.ProcessCallback.writeStatus(string.Format("assembly count: {0}", asmCount)); }
+        void IConnectorActionCallback.InstrumentDataReceiveCountersAsmCount(uint asmCount) { connector.ProcessCallback.WriteStatus(string.Format("assembly count: {0}", asmCount)); }
 
-        void IConnectorActionCallback.InstrumentDataReceiveCountersBegin() { connector.ProcessCallback.writeStatus("InstrumentDataReceiveCountersBegin"); }
+        void IConnectorActionCallback.InstrumentDataReceiveCountersBegin() { connector.ProcessCallback.WriteStatus("InstrumentDataReceiveCountersBegin"); }
 
-        void IConnectorActionCallback.InstrumentDataReceiveCountersEnd() { connector.ProcessCallback.writeStatus("InstrumentDataReceiveCountersEnd"); }
+        void IConnectorActionCallback.InstrumentDataReceiveCountersEnd() { connector.ProcessCallback.WriteStatus("InstrumentDataReceiveCountersEnd"); }
 
-        void IConnectorActionCallback.InstrumentDataReceiveEnd() { connector.ProcessCallback.writeStatus("instrument data load complete"); }
+        void IConnectorActionCallback.InstrumentDataReceiveEnd() { connector.ProcessCallback.WriteStatus("instrument data load complete"); }
 
-        void IConnectorActionCallback.InstrumentDataReceiveFilesBegin() { connector.ProcessCallback.writeStatus("file list is being received"); }
+        void IConnectorActionCallback.InstrumentDataReceiveFilesBegin() { connector.ProcessCallback.WriteStatus("file list is being received"); }
 
-        void IConnectorActionCallback.InstrumentDataReceiveFilesCount(uint fileCount) { connector.ProcessCallback.writeStatus(string.Format("{0} files to load", fileCount)); }
+        void IConnectorActionCallback.InstrumentDataReceiveFilesCount(uint fileCount) { connector.ProcessCallback.WriteStatus(string.Format("{0} files to load", fileCount)); }
 
-        void IConnectorActionCallback.InstrumentDataReceiveFilesEnd() { connector.ProcessCallback.writeStatus("file list load is complete"); }
+        void IConnectorActionCallback.InstrumentDataReceiveFilesEnd() { connector.ProcessCallback.WriteStatus("file list load is complete"); }
 
         void IConnectorActionCallback.InstrumentDataReceiveFilesStat(uint index) { }
 
-        void IConnectorActionCallback.InstrumentDataReceiveStatus() { connector.ProcessCallback.writeStatus("driver connected"); }
+        void IConnectorActionCallback.InstrumentDataReceiveStatus() { connector.ProcessCallback.WriteStatus("driver connected"); }
 
-        void IConnectorActionCallback.MethodsReceiveBegin() { connector.ProcessCallback.writeStatus("function map is being received"); }
+        void IConnectorActionCallback.MethodsReceiveBegin() { connector.ProcessCallback.WriteStatus("function map is being received"); }
 
-        void IConnectorActionCallback.MethodsReceiveEnd() { connector.ProcessCallback.writeStatus("function map load complete"); }
+        void IConnectorActionCallback.MethodsReceiveEnd() { connector.ProcessCallback.WriteStatus("function map load complete"); }
 
-        void IConnectorActionCallback.MethodsReceiveStatus() { connector.ProcessCallback.writeStatus("function map load status"); }
+        void IConnectorActionCallback.MethodsReceiveStatus() { connector.ProcessCallback.WriteStatus("function map load status"); }
 
-        void IConnectorActionCallback.OpenMessagePipe() { connector.ProcessCallback.writeStatus("open driver pipe"); }
+        void IConnectorActionCallback.OpenMessagePipe() { connector.ProcessCallback.WriteStatus("open driver pipe"); }
 
-        void IConnectorActionCallback.SetConnected(bool connected) { connector.ProcessCallback.writeStatus(connected ? "driver connected" : "driver disconnected"); }
+        void IConnectorActionCallback.SetConnected(bool connected) { connector.ProcessCallback.WriteStatus(connected ? "driver connected" : "driver disconnected"); }
 
-        void IConnectorActionCallback.TargetCreateProcess() { connector.ProcessCallback.writeStatus("create target process"); }
+        void IConnectorActionCallback.TargetCreateProcess() { connector.ProcessCallback.WriteStatus("create target process"); }
 
-        void IConnectorActionCallback.TargetRequestShutdown() { connector.ProcessCallback.writeStatus("request target shutdown"); }
+        void IConnectorActionCallback.TargetRequestShutdown() { connector.ProcessCallback.WriteStatus("request target shutdown"); }
 
-        void IConnectorActionCallback.TargetSetEnvironmentVars() { connector.ProcessCallback.writeStatus("modify target environment variables"); }
+        void IConnectorActionCallback.TargetSetEnvironmentVars() { connector.ProcessCallback.WriteStatus("modify target environment variables"); }
 
-        void IConnectorActionCallback.TargetWaitDriver() { connector.ProcessCallback.writeStatus("wait for driver connection"); }
+        void IConnectorActionCallback.TargetWaitDriver() { connector.ProcessCallback.WriteStatus("wait for driver connection"); }
 
         void IConnectorActionCallback.LogMessage(int threadId, int tick, string text)
         {

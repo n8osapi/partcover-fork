@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using PartCover.Framework.Walkers;
 
 namespace PartCover.Framework
@@ -18,7 +16,7 @@ namespace PartCover.Framework
     {
         public event EventHandler<EventArgs<CoverageReport.RunHistoryMessage>> OnMessage;
 
-        internal void writeStatus(string message)
+        internal void WriteStatus(string message)
         {
             if (OnMessage == null)
                 return;

@@ -1,8 +1,9 @@
 using System;
 using System.IO;
 using System.Xml;
+using PartCover.Framework.Walkers;
 
-namespace PartCover.Framework.Walkers
+namespace PartCover.Framework.Reports
 {
     public class ReportReader
     {

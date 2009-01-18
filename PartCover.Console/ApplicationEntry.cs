@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using PartCover.Framework;
+using PartCover.Framework.Reports;
 using PartCover.Framework.Walkers;
 
 namespace PartCover

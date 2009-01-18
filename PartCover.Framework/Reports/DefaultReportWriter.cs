@@ -3,8 +3,9 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Xml;
+using PartCover.Framework.Walkers;
 
-namespace PartCover.Framework.Walkers
+namespace PartCover.Framework.Reports
 {
     public class DefaultReportWriter : IReportWriter
     {

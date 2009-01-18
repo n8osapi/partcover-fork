@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using PartCover.Browser.Api;
+using PartCover.Framework.Reports;
 using PartCover.Framework.Walkers;
 using System.IO;
 using PartCover.Browser.Stuff;
