@@ -48,6 +48,7 @@ struct ModuleDescriptor {
     String moduleName;
     AssemblyID   assembly;
     String assemblyName;
+	String assemblyIdentity;
     bool         loaded;
 
     CComPtr<ISymUnmanagedReader> symReader;

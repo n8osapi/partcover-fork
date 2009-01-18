@@ -484,6 +484,7 @@ struct AssemblyResultsGatherer {
         InstrumentResults::AssemblyResult assemblyResult;
         assemblyResult.name.swap(module.assemblyName);
         assemblyResult.moduleName.swap(module.moduleName);
+		assemblyResult.assemblyIdentity.swap(module.assemblyIdentity);
 
         std::for_each(module.typeDefs.begin(), module.typeDefs.end(), TypedefResultsGatherer(assemblyResult.types));
 

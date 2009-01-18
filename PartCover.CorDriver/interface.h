@@ -40,11 +40,13 @@ enum ProfilerMode : char {
 __interface IInstrumentedBlockWalker : IUnknown {
     HRESULT BeginReport();
 
+	HRESULT EnterAssemblyDef(BSTR assemblyName, BSTR assemblyIdentity, BSTR assemblyPath);
     HRESULT EnterTypedef(BSTR assemblyName, BSTR typedefName, DWORD flags);
     HRESULT EnterMethod(BSTR methodName, BSTR methodSig, DWORD flags, DWORD implFlags);
     HRESULT MethodBlock(ULONG position, ULONG blockLen, DWORD visitCount, ULONG32 fileId, ULONG32 startLine, ULONG32 startColumn, ULONG32 endLine, ULONG32 endColumn);
     HRESULT LeaveMethod();
     HRESULT LeaveTypedef();
+    HRESULT LeaveAssembly();
 
     HRESULT RegisterFile(ULONG32 fileId, BSTR fileUrl);
     HRESULT EndReport();

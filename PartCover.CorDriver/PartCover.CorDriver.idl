@@ -31,12 +31,14 @@ library PartCover
 	interface IInstrumentedBlockWalker : IUnknown {
 		HRESULT  BeginReport();
 #line 43 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+		HRESULT  EnterAssemblyDef([in]BSTR assemblyName, [in]BSTR assemblyIdentity, [in]BSTR assemblyPath);
 		HRESULT  EnterTypedef([in]BSTR assemblyName, [in]BSTR typedefName, [in]DWORD flags);
 		HRESULT  EnterMethod([in]BSTR methodName, [in]BSTR methodSig, [in]DWORD flags, [in]DWORD implFlags);
 		HRESULT  MethodBlock([in]ULONG position, [in]ULONG blockLen, [in]DWORD visitCount, [in]ULONG32 fileId, [in]ULONG32 startLine, [in]ULONG32 startColumn, [in]ULONG32 endLine, [in]ULONG32 endColumn);
 		HRESULT  LeaveMethod();
 		HRESULT  LeaveTypedef();
-#line 49 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+		HRESULT  LeaveAssembly();
+#line 51 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 		HRESULT  RegisterFile([in]ULONG32 fileId, [in]BSTR fileUrl);
 		HRESULT  EndReport();
 	};
@@ -47,45 +49,45 @@ library PartCover
 		helpstring("CorDriver.IConnectorCallback interface"),
 		custom(8AFCDA7F-33B7-3120-86A8-754D2C0C0578, "library_block")
 	] 
-#line 61 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
-	interface IConnectorActionCallback : IUnknown {
 #line 63 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
-		HRESULT  SetConnected([in]VARIANT_BOOL connected);
+	interface IConnectorActionCallback : IUnknown {
 #line 65 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+		HRESULT  SetConnected([in]VARIANT_BOOL connected);
+#line 67 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 		HRESULT  MethodsReceiveBegin();
 		HRESULT  MethodsReceiveStatus();
 		HRESULT  MethodsReceiveEnd();
-#line 69 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+#line 71 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 		HRESULT  InstrumentDataReceiveBegin();
 		HRESULT  InstrumentDataReceiveStatus();
 		HRESULT  InstrumentDataReceiveEnd();
-#line 73 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+#line 75 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 		HRESULT  InstrumentDataReceiveFilesBegin();
 		HRESULT  InstrumentDataReceiveFilesCount([in] size_t fileCount);
 		HRESULT  InstrumentDataReceiveFilesStat([in] size_t index);
 		HRESULT  InstrumentDataReceiveFilesEnd();
-#line 78 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+#line 80 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 		HRESULT  InstrumentDataReceiveCountersBegin();
 		HRESULT  InstrumentDataReceiveCountersAsmCount([in] size_t asmCount);
 		HRESULT  InstrumentDataReceiveCountersAsm([in]BSTR name, [in]BSTR mod, [in] size_t typeDefCount);
 		HRESULT  InstrumentDataReceiveCountersEnd();
-#line 83 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
-		HRESULT  OpenMessagePipe();
 #line 85 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+		HRESULT  OpenMessagePipe();
+#line 87 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 		HRESULT  TargetSetEnvironmentVars();
 		HRESULT  TargetCreateProcess();
 		HRESULT  TargetWaitDriver();
 		HRESULT  TargetRequestShutdown();
-#line 90 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+#line 92 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 		HRESULT  DriverConnected();
 		HRESULT  DriverSendRules();
 		HRESULT  DriverWaitEoIConfirm();
-#line 94 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+#line 96 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 		HRESULT  FunctionsReceiveBegin();
 		HRESULT  FunctionsCount([in] size_t count);
 		HRESULT  FunctionsReceiveStat([in] size_t index);
 		HRESULT  FunctionsReceiveEnd();
-#line 99 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+#line 101 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 		HRESULT  LogMessage([in] INT threadId, [in] LONG tick, [in] BSTR message);
 	};
 
@@ -95,26 +97,26 @@ library PartCover
 		helpstring("CorDriver.IPartCoverConnector2 interface"),
 		custom(8AFCDA7F-33B7-3120-86A8-754D2C0C0578, "library_block")
 	] 
-#line 111 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+#line 113 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 	interface IPartCoverConnector2 : IUnknown {
 		HRESULT  StartTarget([in] BSTR targetPath, [in] BSTR targetWorkingDir, [in] BSTR targetArguments, [in] VARIANT_BOOL redirectOutput, [in,optional] IConnectorActionCallback *callback);
-#line 114 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+#line 116 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 		[propput] HRESULT  LoggingLevel([in] INT logLevel);
 		[propput] HRESULT  FileLoggingEnable([in] VARIANT_BOOL exitCode);
 		[propput] HRESULT  PipeLoggingEnable([in] VARIANT_BOOL exitCode);
-#line 118 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+#line 120 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 		HRESULT  EnableOption([in] enum ProfilerMode mode);
 		HRESULT  WaitForResults([in] VARIANT_BOOL delayClose, [in,optional] IConnectorActionCallback *callback);
 		HRESULT  CloseTarget();
-#line 122 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
-		HRESULT  WalkInstrumentedResults([in] IInstrumentedBlockWalker *walker);
 #line 124 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+		HRESULT  WalkInstrumentedResults([in] IInstrumentedBlockWalker *walker);
+#line 126 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 		HRESULT  IncludeItem([in] BSTR item);
 		HRESULT  ExcludeItem([in] BSTR item);
-#line 127 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+#line 129 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 		[propget] HRESULT  HasTargetExitCode([out,retval] VARIANT_BOOL *exitCode);
 		[propget] HRESULT  TargetExitCode([out,retval] INT *exitCode);
-#line 130 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
+#line 132 "c:\\work\\other_projects\\partcover\\partcover.cordriver\\interface.h"
 		[propget] HRESULT  LogFilePath([out,retval] BSTR *logFilePath);
 		[propget] HRESULT  ProcessId([out,retval] INT *pid);
 	};

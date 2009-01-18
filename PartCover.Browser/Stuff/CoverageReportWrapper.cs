@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 using PartCover.Browser.Api;
 using PartCover.Browser.Api.ReportItems;
 using PartCover.Framework.Walkers;
-using System.Reflection;
 using PartCover.Browser.Stuff.ReportItems;
 
 namespace PartCover.Browser.Stuff
@@ -31,10 +29,10 @@ namespace PartCover.Browser.Stuff
 
         public void build()
         {
-            foreach (string asmName in CoverageReportHelper.GetAssemblies(report))
+            foreach (string asmName in report.GetAssemblies())
             {
                 AssemblyItem assemblyItem = new AssemblyItem(asmName);
-                foreach (CoverageReport.TypeDescriptor d in CoverageReportHelper.GetTypes(report, assemblyItem.Name))
+                foreach (CoverageReport.TypeDescriptor d in report.GetTypes(assemblyItem.Name))
                 {
                     ClassItem classItem = new ClassItem(d.typeName, assemblyItem);
                     buildNamespaceChain(assemblyItem, classItem);
@@ -87,12 +85,12 @@ namespace PartCover.Browser.Stuff
 
         public string getFilePath(uint file)
         {
-            return CoverageReportHelper.GetFileUrl(report, file);
+            return report.GetFileUrl(file);
         }
 
         public void forEachBlock(Action<CoverageReport.InnerBlock> blockReceiver)
         {
-            report.forEachInnerBlock(blockReceiver);
+            report.ForEachInnerBlock(blockReceiver);
         }
 
         public ICollection<CoverageReport.RunHistoryMessage> getRunHistory()

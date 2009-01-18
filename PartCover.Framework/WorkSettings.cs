@@ -10,20 +10,31 @@ namespace PartCover.Framework
 {
     public class SettingsException : Exception
     {
-        public SettingsException(string message) : base(message) { }
+        public SettingsException(string message) : base(message)
+        {
+        }
     }
 
     public class WorkSettings
     {
         #region ArgumentOption
+
         private class ArgumentOption
         {
-            public readonly string key;
-            public readonly OptionHandler handler;
+            #region Delegates
+
+            public delegate void ActivateHandler(WorkSettings settings);
+
+            public delegate void OptionHandler(WorkSettings settings, string value);
+
+            #endregion
+
             public readonly ActivateHandler activator;
-            public bool optional;
+            public readonly OptionHandler handler;
+            public readonly string key;
             public string arguments;
             public string description;
+            public bool optional;
 
             public ArgumentOption(string key, OptionHandler handler)
                 : this(key, handler, null, true, string.Empty, string.Empty)
@@ -35,7 +46,8 @@ namespace PartCover.Framework
             {
             }
 
-            public ArgumentOption(string key, ActivateHandler activator, bool optional, string arguments, string description)
+            public ArgumentOption(string key, ActivateHandler activator, bool optional, string arguments,
+                                  string description)
                 : this(key, null, activator, optional, arguments, description)
             {
             }
@@ -45,7 +57,8 @@ namespace PartCover.Framework
             {
             }
 
-            public ArgumentOption(string key, OptionHandler handler, ActivateHandler activator, bool optional, string arguments, string description)
+            public ArgumentOption(string key, OptionHandler handler, ActivateHandler activator, bool optional,
+                                  string arguments, string description)
             {
                 this.key = key;
                 this.handler = handler;
@@ -54,31 +67,30 @@ namespace PartCover.Framework
                 this.arguments = arguments;
                 this.description = description;
             }
-
-            public delegate void OptionHandler(WorkSettings settings, string value);
-            public delegate void ActivateHandler(WorkSettings settings);
         }
 
         #endregion ArgumentOption
 
         private static readonly ArgumentOption[] Options =
-        { 
-            new ArgumentOption("--target", readTarget),
-            new ArgumentOption("--version", readVersion),
-            new ArgumentOption("--help", readHelp),
-            new ArgumentOption("--target-work-dir", readTargetWorkDir),
-            new ArgumentOption("--generate", readGenerateSettingsFile),
-            new ArgumentOption("--log", readLogLevel),
-            new ArgumentOption("--target-args", readTargetArgs),
-            new ArgumentOption("--include", readInclude),
-            new ArgumentOption("--exclude", readExclude),
-            new ArgumentOption("--output", readOutput),
-            new ArgumentOption("--settings", readSettingsFile)
-        };
+            {
+                new ArgumentOption("--target", readTarget),
+                new ArgumentOption("--version", readVersion),
+                new ArgumentOption("--help", readHelp),
+                new ArgumentOption("--target-work-dir", readTargetWorkDir),
+                new ArgumentOption("--generate", readGenerateSettingsFile),
+                new ArgumentOption("--log", readLogLevel),
+                new ArgumentOption("--target-args", readTargetArgs),
+                new ArgumentOption("--include", readInclude),
+                new ArgumentOption("--exclude", readExclude),
+                new ArgumentOption("--output", readOutput),
+                new ArgumentOption("--reportFormat", readReportFormat),
+                new ArgumentOption("--settings", readSettingsFile),
+            };
 
         private ArgumentOption currentOption;
 
         #region settings readers
+
         private static void readTarget(WorkSettings settings, string value)
         {
             if (!File.Exists(value))
@@ -120,6 +132,11 @@ namespace PartCover.Framework
             if (value.Length > 0) settings.outputFile = value;
         }
 
+        private static void readReportFormat(WorkSettings settings, string value)
+        {
+            if (value.Length > 0) settings.reportFormat = value;
+        }
+
         private static void readExclude(WorkSettings settings, string value)
         {
             if (value.Length > 0) settings.excludeItems.Add(value);
@@ -146,12 +163,13 @@ namespace PartCover.Framework
                 throw new SettingsException("Wrong value for --log (" + ex.Message + ")");
             }
         }
+
         #endregion
 
         #region Parse Args
 
-        private bool printVersion = false;
-        private bool printLongHelp = false;
+        private bool printLongHelp;
+        private bool printVersion;
 
         public bool InitializeFromCommandLine(string[] args)
         {
@@ -182,7 +200,7 @@ namespace PartCover.Framework
                 }
                 else
                 {
-                    throw new SettingsException("Unexpected argument for option '" + currentOption .key + "'");
+                    throw new SettingsException("Unexpected argument for option '" + currentOption.key + "'");
                 }
             }
 
@@ -208,8 +226,9 @@ namespace PartCover.Framework
                 PrintVersion();
             }
 
-            if (TargetPath != null && TargetPath.Length > 0)
+            if (!String.IsNullOrEmpty(TargetPath))
                 return true;
+
             if (showShort)
             {
                 PrintShortUsage(true);
@@ -267,7 +286,8 @@ namespace PartCover.Framework
             Console.Out.WriteLine("       spaces - quote <argument>. If you want specify quote (\") in <arguments>,");
             Console.Out.WriteLine("       then precede it by slash (\\)");
             Console.Out.WriteLine("   --include=<item>, --exclude=<item> :");
-            Console.Out.WriteLine("       specifies item to include or exclude from report. Item is in following format: ");
+            Console.Out.WriteLine(
+                "       specifies item to include or exclude from report. Item is in following format: ");
             Console.Out.WriteLine("          [<assembly_regexp>]<class_regexp>");
             Console.Out.WriteLine("       where <regexp> is simple regular expression, containing only asterix and");
             Console.Out.WriteLine("       characters to point item. For example:");
@@ -297,14 +317,14 @@ namespace PartCover.Framework
         {
             Console.Out.WriteLine("PartCover (console)");
             Console.Out.WriteLine("   application version {0}.{1}.{2}",
-                Assembly.GetExecutingAssembly().GetName().Version.Major,
-                Assembly.GetExecutingAssembly().GetName().Version.Minor,
-                Assembly.GetExecutingAssembly().GetName().Version.Revision);
-            Type connector = typeof(Connector);
+                                  Assembly.GetExecutingAssembly().GetName().Version.Major,
+                                  Assembly.GetExecutingAssembly().GetName().Version.Minor,
+                                  Assembly.GetExecutingAssembly().GetName().Version.Revision);
+            Type connector = typeof (Connector);
             Console.Out.WriteLine("   connector version {0}.{1}.{2}",
-                connector.Assembly.GetName().Version.Major,
-                connector.Assembly.GetName().Version.Minor,
-                connector.Assembly.GetName().Version.Revision);
+                                  connector.Assembly.GetName().Version.Major,
+                                  connector.Assembly.GetName().Version.Minor,
+                                  connector.Assembly.GetName().Version.Revision);
             Console.Out.WriteLine("");
         }
 
@@ -312,65 +332,73 @@ namespace PartCover.Framework
 
         #region Properties
 
+        private readonly List<string> excludeItems = new List<string>();
+        private readonly List<string> includeItems = new List<string>();
+        private string generateSettingsFileName;
+        private int logLevel;
+        private string outputFile;
+        private string reportFormat;
         private string settingsFile;
+        private string targetArgs;
+        private string targetPath;
+        private string targetWorkingDir;
+
         public string SettingsFile
         {
             get { return settingsFile; }
             set { settingsFile = value; }
         }
 
-        private string generateSettingsFileName;
         public string GenerateSettingsFileName
         {
             get { return generateSettingsFileName; }
             set { generateSettingsFileName = value; }
         }
 
-        private int logLevel = 0;
         public int LogLevel
         {
             get { return logLevel; }
             set { logLevel = value; }
         }
 
-        private readonly List<string> includeItems = new List<string>();
         public string[] IncludeItems
         {
             get { return includeItems.ToArray(); }
         }
 
-        private readonly List<string> excludeItems = new List<string>();
         public string[] ExcludeItems
         {
             get { return excludeItems.ToArray(); }
         }
 
-        private string targetPath;
         public string TargetPath
         {
             get { return targetPath; }
             set { targetPath = value; }
         }
 
-        private string targetWorkingDir;
         public string TargetWorkingDir
         {
             get { return targetWorkingDir; }
             set { targetWorkingDir = value; }
         }
 
-        private string targetArgs = null;
         public string TargetArgs
         {
             get { return targetArgs; }
             set { targetArgs = value; }
         }
 
-        private string outputFile = null;
         public string FileNameForReport
         {
             get { return outputFile; }
             set { outputFile = value; }
+        }
+
+        public string ReportFormat
+        {
+            get { return reportFormat; }
+            set { reportFormat = value; }
         }
 
         public bool OutputToFile
@@ -396,10 +424,13 @@ namespace PartCover.Framework
             if (targetPath != null) AppendValue(xmlDoc.DocumentElement, "Target", targetPath);
             if (targetWorkingDir != null) AppendValue(xmlDoc.DocumentElement, "TargetWorkDir", targetWorkingDir);
             if (targetArgs != null) AppendValue(xmlDoc.DocumentElement, "TargetArgs", targetArgs);
-            if (logLevel > 0) AppendValue(xmlDoc.DocumentElement, "LogLevel", logLevel.ToString(CultureInfo.InvariantCulture));
+            if (logLevel > 0)
+                AppendValue(xmlDoc.DocumentElement, "LogLevel", logLevel.ToString(CultureInfo.InvariantCulture));
             if (outputFile != null) AppendValue(xmlDoc.DocumentElement, "Output", outputFile);
-            if (printLongHelp) AppendValue(xmlDoc.DocumentElement, "ShowHelp", printLongHelp.ToString(CultureInfo.InvariantCulture));
-            if (printVersion) AppendValue(xmlDoc.DocumentElement, "ShowVersion", printVersion.ToString(CultureInfo.InvariantCulture));
+            if (printLongHelp)
+                AppendValue(xmlDoc.DocumentElement, "ShowHelp", printLongHelp.ToString(CultureInfo.InvariantCulture));
+            if (printVersion)
+                AppendValue(xmlDoc.DocumentElement, "ShowVersion", printVersion.ToString(CultureInfo.InvariantCulture));
 
             foreach (string item in IncludeItems) AppendValue(xmlDoc.DocumentElement, "Rule", "+" + item);
             foreach (string item in ExcludeItems) AppendValue(xmlDoc.DocumentElement, "Rule", "-" + item);

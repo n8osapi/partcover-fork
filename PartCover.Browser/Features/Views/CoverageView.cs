@@ -96,7 +96,7 @@ namespace PartCover.Browser.Features.Views
 
             foreach (CoverageReport.InnerBlock ib in variant.Blocks)
             {
-                Color itemColor = ColorProvider.GetForeColorForBlock(CoverageReportHelper.GetBlockCoverage(ib));
+                Color itemColor = ColorProvider.GetForeColorForBlock(ib.GetBlockCoverage());
 
                 ListViewItem lvi = new ListViewItem();
                 lvi.ForeColor = itemColor;

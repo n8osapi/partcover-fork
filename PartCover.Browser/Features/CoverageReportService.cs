@@ -30,9 +30,10 @@ namespace PartCover.Browser.Features
         public void loadFromFile(string fileName)
         {
             CoverageReport report = new CoverageReport();
+            ReportReader reportReader = new ReportReader();
             using (StreamReader reader = new StreamReader(fileName))
             {
-                CoverageReportHelper.ReadReport(report, reader);
+                reportReader.ReadReport(report, reader);
             }
             setReport(report);
             reportFileName = fileName;
@@ -54,9 +55,10 @@ namespace PartCover.Browser.Features
 
         public void saveReport(string fileName)
         {
+            DefaultReportWriter reportWriter = new DefaultReportWriter();
             using (StreamWriter writer = new StreamWriter(fileName))
             {
-                CoverageReportHelper.WriteReport(reportWrapper.Report, writer);
+                reportWriter.WriteReport(reportWrapper.Report, writer);
                 reportFileName = fileName;
             }
         }

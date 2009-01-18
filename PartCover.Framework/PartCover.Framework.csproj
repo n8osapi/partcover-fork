@@ -105,12 +105,16 @@
     <Compile Include="Walkers\CoverageReportHelper.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Walkers\DefaultReportWriter.cs" />
     <Compile Include="Walkers\InstrumentedBlocksWalker.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Walkers\IReportWriter.cs" />
+    <Compile Include="Walkers\NCoverReportWriter.cs" />
     <Compile Include="Walkers\ReportException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Walkers\ReportReader.cs" />
     <Compile Include="WorkSettings.cs">
       <SubType>Code</SubType>
     </Compile>

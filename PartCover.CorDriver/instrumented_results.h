@@ -43,6 +43,7 @@ public:
     struct AssemblyResult {
         String name;
         String moduleName;
+		String assemblyIdentity;
         TypedefResults types;
     };
     typedef std::vector<AssemblyResult> AssemblyResults;

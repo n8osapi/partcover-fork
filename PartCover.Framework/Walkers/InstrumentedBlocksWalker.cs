@@ -1,9 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.Collections;
-using System.Xml;
-
-using PartCover.Framework.Walkers;
 
 namespace PartCover.Framework.Walkers
 {
@@ -14,9 +9,10 @@ namespace PartCover.Framework.Walkers
 
     internal class InstrumentedBlocksWalkerInner :
         InstrumentedBlocksWalker,
-        PartCover.IInstrumentedBlockWalker
+        IInstrumentedBlockWalker
     {
-        CoverageReport coverage;
+        readonly CoverageReport coverage;
+
         public CoverageReport Report
         {
             get { return coverage; }
@@ -31,9 +27,23 @@ namespace PartCover.Framework.Walkers
 
         public void EndReport() { }
 
-        public void RegisterFile(System.UInt32 fileId, System.String fileUrl)
+        public void RegisterFile(UInt32 fileId, String fileUrl)
         {
-            CoverageReportHelper.AddFile(Report, fileId, fileUrl);
+            Report.AddFile(fileId, fileUrl);
+        }
+
+        CoverageReport.AssemblyDescriptor currentAssembly;
+
+        public void EnterAssemblyDef(String assemblyName, String assemblyIdentity, String assemblyPath)
+        {
+            currentAssembly = new CoverageReport.AssemblyDescriptor(assemblyName);
+            currentAssembly.assemblyIdentity = assemblyIdentity;
+            currentAssembly.assemblyPath = assemblyPath;
+        }
+
+        public void LeaveAssembly()
+        {
+            Report.AddAssembly(currentAssembly);
         }
 
         CoverageReport.TypeDescriptor currentType;
@@ -48,7 +58,7 @@ namespace PartCover.Framework.Walkers
 
         public void LeaveTypedef()
         {
-            CoverageReportHelper.AddType(Report, currentType);
+            currentAssembly.AddType(currentType);
         }
 
         CoverageReport.MethodDescriptor currentMethod;
@@ -64,7 +74,7 @@ namespace PartCover.Framework.Walkers
 
         public void LeaveMethod()
         {
-            CoverageReportHelper.AddMethod(currentType, currentMethod);
+            currentType.AddMethod(currentMethod);
         }
 
         public void MethodBlock(UInt32 position, UInt32 blockLen, UInt32 visitCount, UInt32 fileId, UInt32 startLine, UInt32 startColumn, UInt32 endLine, UInt32 endColumn)
@@ -79,7 +89,7 @@ namespace PartCover.Framework.Walkers
             inner.endLine = endLine;
             inner.endColumn = endColumn;
 
-            CoverageReportHelper.AddMethodBlock(currentMethod, inner);
+            currentMethod.AddMethodBlock(inner);
         }
     }
 }

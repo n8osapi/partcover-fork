@@ -238,7 +238,12 @@ void InstrumentResults::WalkResults(IInstrumentedBlockWalker& walker) {
         const AssemblyResult& asmResult = *asmIt;
 
         CComBSTR asmName(asmResult.name.c_str());
+		// FIXME: Figure out how to get the full identity
+		// CComBSTR assmIdentiy(asmResult.assemblyIdentity.c_str());
         CComBSTR moduleName(asmResult.moduleName.c_str());
+        
+		if (FAILED(walker.EnterAssemblyDef(asmName, NULL, moduleName)))
+			return;
 
         for(TypedefResults::const_iterator typeIt = asmResult.types.begin(); typeIt != asmResult.types.end(); typeIt++) {
             const TypedefResult& typedefResult = *typeIt;
@@ -271,6 +276,9 @@ void InstrumentResults::WalkResults(IInstrumentedBlockWalker& walker) {
             if(FAILED(walker.LeaveTypedef()))
                 return;
         }
+
+		if(FAILED(walker.LeaveAssembly()))
+                return;
     }
 
     if(FAILED(walker.EndReport()))

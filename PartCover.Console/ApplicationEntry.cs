@@ -1,15 +1,14 @@
 using System;
 using System.IO;
-
 using PartCover.Framework;
 using PartCover.Framework.Walkers;
 
 namespace PartCover
 {
-    class ApplicationEntry
+    internal class ApplicationEntry
     {
         [STAThread]
-        static int Main(string[] args)
+        private static int Main(string[] args)
         {
             try
             {
@@ -25,7 +24,7 @@ namespace PartCover
 
                 connector.UseFileLogging(true);
                 connector.UsePipeLogging(false);
-                connector.SetLogging((Logging)settings.LogLevel);
+                connector.SetLogging((Logging) settings.LogLevel);
 
                 foreach (string item in settings.IncludeItems)
                 {
@@ -35,7 +34,7 @@ namespace PartCover
                     }
                     catch (ArgumentException)
                     {
-                        Console.Error.WriteLine("Item '" + item + "' have wrong format");
+                        LogError("Item '{0}' has wrong format", item);
                     }
                 }
 
@@ -47,7 +46,7 @@ namespace PartCover
                     }
                     catch (ArgumentException)
                     {
-                        Console.Error.WriteLine("Item '" + item + "' have wrong format");
+                        LogError("Item '{0}' has wrong format", item);
                     }
                 }
 
@@ -60,21 +59,31 @@ namespace PartCover
 
                 try
                 {
-                    if (settings.OutputToFile)
+                    IReportWriter reportWriter;
+                    if (settings.ReportFormat == "ncover")
                     {
-                        StreamWriter writer = File.CreateText(settings.FileNameForReport);
-                        CoverageReportHelper.WriteReport(connector.BlockWalker.Report, writer);
-                        writer.Close();
+                        reportWriter = new NCoverReportWriter();
                     }
                     else
                     {
-                        CoverageReportHelper.WriteReport(connector.BlockWalker.Report, Console.Out);
+                        reportWriter = new DefaultReportWriter();
                     }
 
+                    if (settings.OutputToFile)
+                    {
+                        using (StreamWriter writer = File.CreateText(settings.FileNameForReport))
+                        {
+                            reportWriter.WriteReport(connector.BlockWalker.Report, writer);
+                        }
+                    }
+                    else
+                    {
+                        reportWriter.WriteReport(connector.BlockWalker.Report, Console.Out);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine("Can't save report (" + ex.Message + ")");
+                    LogError("Can't save report ({0})", ex.Message);
                 }
 
                 if (connector.TargetExitCode.HasValue)
@@ -82,24 +91,29 @@ namespace PartCover
             }
             catch (SettingsException ex)
             {
-                Console.Error.WriteLine(ex.Message);
+                LogError(ex.Message);
                 return -1;
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine(ex.Message);
-                Console.Error.WriteLine(ex.StackTrace);
+                LogError(ex.Message);
+                LogError(ex.StackTrace);
                 return -1;
             }
 
             return 0;
         }
 
-        static void ProcessCallback_OnMessage(object sender, EventArgs<CoverageReport.RunHistoryMessage> e)
+        private static void LogError(string format, params string[] args)
+        {
+            Console.Error.WriteLine(format, args);
+        }
+
+        private static void ProcessCallback_OnMessage(object sender, EventArgs<CoverageReport.RunHistoryMessage> e)
         {
         }
 
-        static void connector_OnEventMessage(object sender, EventArgs<CoverageReport.RunLogMessage> e)
+        private static void connector_OnEventMessage(object sender, EventArgs<CoverageReport.RunLogMessage> e)
         {
         }
     }

@@ -89,7 +89,7 @@ namespace PartCover.Browser
 
             try
             {
-                if (runner.Report.types.Count == 0)
+                if (runner.Report.assemblies.Count == 0)
                 {
                     ShowInformation("Report is empty. Check settings and run target again.");
                     return;
@@ -104,8 +104,9 @@ namespace PartCover.Browser
 
             if (runTargetForm.OutputToFile)
             {
+                DefaultReportWriter reportWriter = new DefaultReportWriter();
                 StreamWriter writer = new StreamWriter(dlgSave.FileName);
-                CoverageReportHelper.WriteReport(runner.Report, writer);
+                reportWriter.WriteReport(runner.Report, writer);
                 writer.Close();
             }
             else

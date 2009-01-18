@@ -342,8 +342,8 @@ namespace PartCover.Browser.Controls
             coveredCodeSize = 0;
             foreach (ICoveredVariant bData in md.CoveredVariants)
             {
-                codeSize = CoverageReportHelper.GetBlockCodeSize(bData.Blocks);
-                coveredCodeSize = CoverageReportHelper.GetBlockCoveredCodeSize(bData.Blocks);
+                codeSize = CoverageReport.InnerBlockData.GetBlockCodeSize(bData.Blocks);
+                coveredCodeSize = CoverageReport.InnerBlockData.GetBlockCoveredCodeSize(bData.Blocks);
             }
             float percent = codeSize == 0 ? 0 : coveredCodeSize / (float)codeSize * 100;
             Text = string.Format("{0} ({1:#0}%)", MethodName, percent);
@@ -386,8 +386,8 @@ namespace PartCover.Browser.Controls
 
         public void UpdateCoverageInfo()
         {
-            codeSize = CoverageReportHelper.GetBlockCodeSize(bData.Blocks);
-            coveredCodeSize = CoverageReportHelper.GetBlockCoveredCodeSize(bData.Blocks);
+            codeSize = CoverageReport.InnerBlockData.GetBlockCodeSize(bData.Blocks);
+            coveredCodeSize = CoverageReport.InnerBlockData.GetBlockCoveredCodeSize(bData.Blocks);
 
             float percent = codeSize == 0 ? 0 : coveredCodeSize / (float)codeSize * 100;
             Text = string.Format("Block Data ({0:#0}%)", percent);
