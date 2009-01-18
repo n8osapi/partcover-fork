@@ -11,8 +11,10 @@ namespace PartCover.Framework.Walkers
         public List<FileDescriptor> files = new List<FileDescriptor>();
         public List<RunHistoryMessage> runHistory = new List<RunHistoryMessage>();
         public List<RunLogMessage> runLog = new List<RunLogMessage>();
-
         public List<AssemblyDescriptor> assemblies = new List<AssemblyDescriptor>();
+
+        public DateTime start;
+        public DateTime end;
 
         public void AddAssembly(AssemblyDescriptor dAssembly)
         {

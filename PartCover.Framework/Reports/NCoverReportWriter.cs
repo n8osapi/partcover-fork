@@ -21,8 +21,8 @@ namespace PartCover.Framework.Reports
             root.Attributes.Append(xml.CreateAttribute("driverVersion")).Value = VersionString(GetHelperAssembly().GetName().Version);
 
             // FIXME: Need start and end times
-            root.Attributes.Append(xml.CreateAttribute("startTime")).Value = DateTime.Now.ToString(NCOVER_DATE_FORMAT);
-            root.Attributes.Append(xml.CreateAttribute("measureTime")).Value = DateTime.Now.ToString(NCOVER_DATE_FORMAT);
+            root.Attributes.Append(xml.CreateAttribute("startTime")).Value = report.start.ToString(NCOVER_DATE_FORMAT);
+            root.Attributes.Append(xml.CreateAttribute("measureTime")).Value = report.end.ToString(NCOVER_DATE_FORMAT);
 
             foreach (CoverageReport.AssemblyDescriptor assembly in report.assemblies)
             {
@@ -45,12 +45,11 @@ namespace PartCover.Framework.Reports
                         {
                             foreach (CoverageReport.InnerBlock inner in bData.blocks)
                             {
-                                XmlNode point = methodNode.AppendChild(xml.CreateElement("seqpnt"));
-                                point.Attributes.Append(xml.CreateAttribute("visitcount")).Value = inner.visitCount.ToString(CultureInfo.InvariantCulture);
-                                point.Attributes.Append(xml.CreateAttribute("excluded")).Value = "false";
-
                                 if (inner.fileId != 0)
                                 {
+                                    XmlNode point = methodNode.AppendChild(xml.CreateElement("seqpnt"));
+                                    point.Attributes.Append(xml.CreateAttribute("visitcount")).Value = inner.visitCount.ToString(CultureInfo.InvariantCulture);
+                                    point.Attributes.Append(xml.CreateAttribute("excluded")).Value = "false";
                                     point.Attributes.Append(xml.CreateAttribute("line")).Value = inner.startLine.ToString(CultureInfo.InvariantCulture);
                                     point.Attributes.Append(xml.CreateAttribute("column")).Value = inner.startColumn.ToString(CultureInfo.InvariantCulture);
                                     point.Attributes.Append(xml.CreateAttribute("endline")).Value = inner.endLine.ToString(CultureInfo.InvariantCulture);

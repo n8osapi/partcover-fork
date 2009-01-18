@@ -11,28 +11,32 @@ namespace PartCover.Framework.Walkers
         InstrumentedBlocksWalker,
         IInstrumentedBlockWalker
     {
-        readonly CoverageReport coverage;
-
-        public CoverageReport Report
-        {
-            get { return coverage; }
-        }
+        private readonly CoverageReport coverage;
+        private CoverageReport.AssemblyDescriptor currentAssembly;
+        private CoverageReport.MethodDescriptor currentMethod;
+        private CoverageReport.TypeDescriptor currentType;
 
         public InstrumentedBlocksWalkerInner()
         {
             coverage = new CoverageReport();
         }
 
-        public void BeginReport() { }
+        #region IInstrumentedBlockWalker Members
 
-        public void EndReport() { }
+        public void BeginReport()
+        {
+            Report.start = DateTime.Now;
+        }
+
+        public void EndReport()
+        {
+            Report.end = DateTime.Now;
+        }
 
         public void RegisterFile(UInt32 fileId, String fileUrl)
         {
             Report.AddFile(fileId, fileUrl);
         }
-
-        CoverageReport.AssemblyDescriptor currentAssembly;
 
         public void EnterAssemblyDef(String assemblyName, String assemblyIdentity, String assemblyPath)
         {
@@ -45,8 +49,6 @@ namespace PartCover.Framework.Walkers
         {
             Report.AddAssembly(currentAssembly);
         }
-
-        CoverageReport.TypeDescriptor currentType;
 
         public void EnterTypedef(String assemblyName, String typedefName, UInt32 flags)
         {
@@ -61,9 +63,7 @@ namespace PartCover.Framework.Walkers
             currentAssembly.AddType(currentType);
         }
 
-        CoverageReport.MethodDescriptor currentMethod;
-
-        public void EnterMethod(String methodName, String methodSig,  UInt32 flags, UInt32 implFlags)
+        public void EnterMethod(String methodName, String methodSig, UInt32 flags, UInt32 implFlags)
         {
             currentMethod = new CoverageReport.MethodDescriptor(1);
             currentMethod.methodName = methodName;
@@ -77,7 +77,8 @@ namespace PartCover.Framework.Walkers
             currentType.AddMethod(currentMethod);
         }
 
-        public void MethodBlock(UInt32 position, UInt32 blockLen, UInt32 visitCount, UInt32 fileId, UInt32 startLine, UInt32 startColumn, UInt32 endLine, UInt32 endColumn)
+        public void MethodBlock(UInt32 position, UInt32 blockLen, UInt32 visitCount, UInt32 fileId, UInt32 startLine,
+                                UInt32 startColumn, UInt32 endLine, UInt32 endColumn)
         {
             CoverageReport.InnerBlock inner = new CoverageReport.InnerBlock();
             inner.position = position;
@@ -91,5 +92,16 @@ namespace PartCover.Framework.Walkers
 
             currentMethod.AddMethodBlock(inner);
         }
+
+        #endregion
+
+        #region InstrumentedBlocksWalker Members
+
+        public CoverageReport Report
+        {
+            get { return coverage; }
+        }
+
+        #endregion
     }
 }
