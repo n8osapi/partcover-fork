@@ -1,11 +1,11 @@
 using System;
 using System.IO;
-using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
 using PartCover.Framework;
+using PartCover.Framework.Settings;
 
 namespace PartCover.Browser
 {
@@ -38,6 +38,9 @@ namespace PartCover.Browser
         private CheckBox chkLoggingSkipByState;
         private CheckBox chkLoggingSkipByRule;
         private System.Windows.Forms.OpenFileDialog dlgOpen;
+
+        WorkSettingsReader settingsReader = new WorkSettingsReader();
+        WorkSettingsWriter settingsWriter = new WorkSettingsWriter();
 
         class LogLevelEntry
         {
@@ -511,7 +514,7 @@ namespace PartCover.Browser
                 try
                 {
                     settings.GenerateSettingsFileName = dlgSave.FileName;
-                    settings.GenerateSettingsFile();
+                    settingsWriter.GenerateSettingsFile(settings);
                     ShowInformation("Settings were saved!");
                 }
                 catch (Exception ex)
@@ -529,12 +532,10 @@ namespace PartCover.Browser
                 return;
             }
 
-            WorkSettings settings = new WorkSettings();
-
-            settings.SettingsFile = dlgOpen.FileName;
+            WorkSettings settings = null;
             try
             {
-                settings.ReadSettingsFile();
+                settings = settingsReader.ReadSettingsFile(dlgOpen.FileName);
             }
             catch (Exception ex)
             {

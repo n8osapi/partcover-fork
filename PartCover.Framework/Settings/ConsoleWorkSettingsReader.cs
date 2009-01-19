@@ -1,33 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using System.Xml;
 
-namespace PartCover.Framework
+namespace PartCover.Framework.Settings
 {
-    public class SettingsException : Exception
+    public class ConsoleWorkSettingsReader
     {
-        public SettingsException(string message) : base(message)
-        {
-        }
-    }
-
-    public class WorkSettings
-    {
-        #region ArgumentOption
-
         private class ArgumentOption
         {
-            #region Delegates
-
             public delegate void ActivateHandler(WorkSettings settings);
-
             public delegate void OptionHandler(WorkSettings settings, string value);
-
-            #endregion
 
             public readonly ActivateHandler activator;
             public readonly OptionHandler handler;
@@ -58,8 +41,6 @@ namespace PartCover.Framework
             }
         }
 
-        #endregion ArgumentOption
-
         private static readonly ArgumentOption[] Options =
             {
                 new ArgumentOption("--target", ReadTarget),
@@ -84,68 +65,68 @@ namespace PartCover.Framework
         {
             if (!File.Exists(value))
                 throw new SettingsException("Cannot find target (" + value + ")");
-            settings.targetPath = Path.GetFullPath(value);
+            settings.TargetPath = Path.GetFullPath(value);
         }
 
         private static void ReadGenerateSettingsFile(WorkSettings settings, string value)
         {
-            settings.generateSettingsFileName = value;
+            settings.GenerateSettingsFileName = value;
         }
 
         private static void ReadHelp(WorkSettings settings)
         {
-            settings.printLongHelp = true;
+            settings.PrintLongHelp = true;
         }
 
         private static void ReadVersion(WorkSettings settings)
         {
-            settings.printVersion = true;
+            settings.PrintVersion = true;
         }
 
         private static void ReadTargetWorkDir(WorkSettings settings, string value)
         {
             if (!Directory.Exists(value))
                 throw new SettingsException("Cannot find target working dir (" + value + ")");
-            settings.targetWorkingDir = Path.GetFullPath(value);
+            settings.TargetWorkingDir = Path.GetFullPath(value);
         }
 
         private static void ReadSettingsFile(WorkSettings settings, string value)
         {
             if (!File.Exists(value))
                 throw new SettingsException("Cannot find settings file (" + value + ")");
-            settings.settingsFile = value;
+            settings.SettingsFile = value;
         }
 
         private static void ReadOutput(WorkSettings settings, string value)
         {
-            if (value.Length > 0) settings.outputFile = value;
+            if (value.Length > 0) settings.FileNameForReport = value;
         }
 
         private static void ReadReportFormat(WorkSettings settings, string value)
         {
-            if (value.Length > 0) settings.reportFormat = value;
+            if (value.Length > 0) settings.ReportFormat = value;
         }
 
         private static void ReadExclude(WorkSettings settings, string value)
         {
-            if (value.Length > 0) settings.excludeItems.Add(value);
+            if (value.Length > 0) settings.ExcludeRules(value);
         }
 
         private static void ReadInclude(WorkSettings settings, string value)
         {
-            if (value.Length > 0) settings.includeItems.Add(value);
+            if (value.Length > 0) settings.IncludeRules(value);
         }
 
         private static void ReadTargetArgs(WorkSettings settings, string value)
         {
-            settings.targetArgs = value;
+            settings.TargetArgs = value;
         }
 
         private static void ReadLogLevel(WorkSettings settings, string value)
         {
             try
             {
-                settings.logLevel = Int32.Parse(value, CultureInfo.InvariantCulture);
+                settings.LogLevel = Int32.Parse(value, CultureInfo.InvariantCulture);
             }
             catch (Exception ex)
             {
@@ -155,13 +136,18 @@ namespace PartCover.Framework
 
         #endregion
 
-        #region Parse Args
+        private readonly WorkSettingsReader settingsReader;
+        private readonly WorkSettingsWriter settingsWriter;
 
-        private bool printLongHelp;
-        private bool printVersion;
-
-        public bool InitializeFromCommandLine(string[] args)
+        public ConsoleWorkSettingsReader(WorkSettingsReader reader, WorkSettingsWriter writer)
         {
+            settingsReader = reader;
+            settingsWriter = writer;
+        }
+
+        public WorkSettings InitializeFromCommandLine(string[] args)
+        {
+            WorkSettings settings = new WorkSettings();
             currentOption = null;
 
             foreach (string arg in args)
@@ -172,7 +158,7 @@ namespace PartCover.Framework
                     currentOption = nextOption;
 
                     if (currentOption.activator != null)
-                        currentOption.activator(this);
+                        currentOption.activator(settings);
 
                     continue;
                 }
@@ -180,12 +166,12 @@ namespace PartCover.Framework
                 if (currentOption == null)
                 {
                     PrintShortUsage(true);
-                    return false;
+                    return null;
                 }
 
                 if (currentOption.handler != null)
                 {
-                    currentOption.handler(this, arg);
+                    currentOption.handler(settings, arg);
                 }
                 else
                 {
@@ -193,36 +179,36 @@ namespace PartCover.Framework
                 }
             }
 
-            if (settingsFile != null)
+            if (settings.SettingsFile != null)
             {
-                ReadSettingsFile();
+                settings = settingsReader.ReadSettingsFile(settings.SettingsFile);
             }
-            else if (generateSettingsFileName != null)
+            else if (settings.GenerateSettingsFileName != null)
             {
-                GenerateSettingsFile();
-                return false;
+                settingsWriter.GenerateSettingsFile(settings);
+                return null;
             }
             bool showShort = true;
-            if (printLongHelp)
+            if (settings.PrintLongHelp)
             {
                 showShort = false;
-                PrintVersion();
+                PrintVersionInfo();
                 PrintShortUsage(false);
                 PrintLongUsage();
             }
-            else if (printVersion)
+            else if (settings.PrintVersion)
             {
-                PrintVersion();
+                PrintVersionInfo();
             }
 
-            if (!String.IsNullOrEmpty(TargetPath))
-                return true;
+            if (!String.IsNullOrEmpty(settings.TargetPath))
+                return settings;
 
             if (showShort)
             {
                 PrintShortUsage(true);
             }
-            return false;
+            return null;
         }
 
         private static ArgumentOption GetOptionHandler(string arg)
@@ -240,10 +226,6 @@ namespace PartCover.Framework
 
             return null;
         }
-
-        #endregion //Parse Args
-
-        #region PrintUsage
 
         public static void PrintShortUsage(bool showNext)
         {
@@ -302,7 +284,7 @@ namespace PartCover.Framework
             Console.Out.WriteLine("");
         }
 
-        public static void PrintVersion()
+        public static void PrintVersionInfo()
         {
             Console.Out.WriteLine("PartCover (console)");
             Console.Out.WriteLine("   application version {0}.{1}.{2}",
@@ -315,196 +297,6 @@ namespace PartCover.Framework
                                   connector.Assembly.GetName().Version.Minor,
                                   connector.Assembly.GetName().Version.Revision);
             Console.Out.WriteLine("");
-        }
-
-        #endregion PrintUsage
-
-        #region Properties
-
-        private readonly List<string> excludeItems = new List<string>();
-        private readonly List<string> includeItems = new List<string>();
-        private string generateSettingsFileName;
-        private int logLevel;
-        private string outputFile;
-        private string reportFormat;
-        private string settingsFile;
-        private string targetArgs;
-        private string targetPath;
-        private string targetWorkingDir;
-
-        public string SettingsFile
-        {
-            get { return settingsFile; }
-            set { settingsFile = value; }
-        }
-
-        public string GenerateSettingsFileName
-        {
-            get { return generateSettingsFileName; }
-            set { generateSettingsFileName = value; }
-        }
-
-        public int LogLevel
-        {
-            get { return logLevel; }
-            set { logLevel = value; }
-        }
-
-        public string[] IncludeItems
-        {
-            get { return includeItems.ToArray(); }
-        }
-
-        public string[] ExcludeItems
-        {
-            get { return excludeItems.ToArray(); }
-        }
-
-        public string TargetPath
-        {
-            get { return targetPath; }
-            set { targetPath = value; }
-        }
-
-        public string TargetWorkingDir
-        {
-            get { return targetWorkingDir; }
-            set { targetWorkingDir = value; }
-        }
-
-        public string TargetArgs
-        {
-            get { return targetArgs; }
-            set { targetArgs = value; }
-        }
-
-        public string FileNameForReport
-        {
-            get { return outputFile; }
-            set { outputFile = value; }
-        }
-
-        public string ReportFormat
-        {
-            get { return reportFormat; }
-            set { reportFormat = value; }
-        }
-
-        public bool OutputToFile
-        {
-            get { return FileNameForReport != null; }
-        }
-
-        #endregion //Properties
-
-        #region SerializeSettings
-
-        private static void AppendValue(XmlNode parent, string name, string value)
-        {
-            Debug.Assert(parent != null && parent.OwnerDocument != null);
-            XmlNode node = parent.AppendChild(parent.OwnerDocument.CreateElement(name));
-            node.InnerText = value;
-        }
-
-        public void GenerateSettingsFile()
-        {
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.AppendChild(xmlDoc.CreateElement("PartCoverSettings"));
-            if (targetPath != null) AppendValue(xmlDoc.DocumentElement, "Target", targetPath);
-            if (targetWorkingDir != null) AppendValue(xmlDoc.DocumentElement, "TargetWorkDir", targetWorkingDir);
-            if (targetArgs != null) AppendValue(xmlDoc.DocumentElement, "TargetArgs", targetArgs);
-            if (logLevel > 0)
-                AppendValue(xmlDoc.DocumentElement, "LogLevel", logLevel.ToString(CultureInfo.InvariantCulture));
-            if (outputFile != null) AppendValue(xmlDoc.DocumentElement, "Output", outputFile);
-            if (printLongHelp)
-                AppendValue(xmlDoc.DocumentElement, "ShowHelp", printLongHelp.ToString(CultureInfo.InvariantCulture));
-            if (printVersion)
-                AppendValue(xmlDoc.DocumentElement, "ShowVersion", printVersion.ToString(CultureInfo.InvariantCulture));
-
-            foreach (string item in IncludeItems) AppendValue(xmlDoc.DocumentElement, "Rule", "+" + item);
-            foreach (string item in ExcludeItems) AppendValue(xmlDoc.DocumentElement, "Rule", "-" + item);
-
-            try
-            {
-                if ("console".Equals(generateSettingsFileName, StringComparison.InvariantCulture))
-                    xmlDoc.Save(Console.Out);
-                else
-                    xmlDoc.Save(generateSettingsFileName);
-            }
-            catch (Exception ex)
-            {
-                throw new SettingsException("Cannot write settings (" + ex.Message + ")");
-            }
-        }
-
-        public void ReadSettingsFile()
-        {
-            XmlDocument xmlDoc = new XmlDocument();
-            try
-            {
-                xmlDoc.Load(settingsFile);
-                logLevel = 0;
-
-                XmlNode node = xmlDoc.SelectSingleNode("/PartCoverSettings/Target/text()");
-                if (node != null && node.Value != null) targetPath = node.Value;
-                node = xmlDoc.SelectSingleNode("/PartCoverSettings/TargetWorkDir/text()");
-                if (node != null && node.Value != null) targetWorkingDir = node.Value;
-                node = xmlDoc.SelectSingleNode("/PartCoverSettings/TargetArgs/text()");
-                if (node != null && node.Value != null) targetArgs = node.Value;
-                node = xmlDoc.SelectSingleNode("/PartCoverSettings/LogLevel/text()");
-                if (node != null && node.Value != null) logLevel = int.Parse(node.Value);
-                node = xmlDoc.SelectSingleNode("/PartCoverSettings/Output/text()");
-                if (node != null && node.Value != null) outputFile = node.Value;
-                node = xmlDoc.SelectSingleNode("/PartCoverSettings/ShowHelp/text()");
-                if (node != null && node.Value != null) printLongHelp = bool.Parse(node.Value);
-                node = xmlDoc.SelectSingleNode("/PartCoverSettings/ShowVersion/text()");
-                if (node != null && node.Value != null) printVersion = bool.Parse(node.Value);
-
-                XmlNodeList list = xmlDoc.SelectNodes("/PartCoverSettings/Rule");
-                if (list != null)
-                {
-                    foreach (XmlNode rule in list)
-                    {
-                        XmlNode ruleText = rule.SelectSingleNode("text()");
-                        if (ruleText == null || ruleText.Value == null || ruleText.Value.Length == 0)
-                            continue;
-                        string[] rules = ruleText.Value.Split(',');
-                        foreach (string s in rules)
-                        {
-                            if (s.Length <= 1)
-                                continue;
-                            if (s[0] == '+')
-                                includeItems.Add(s.Substring(1));
-                            else if (s[0] == '-')
-                                excludeItems.Add(s.Substring(1));
-                            else
-                                throw new SettingsException("Wrong rule format (" + s + ")");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new SettingsException("Cannot load settings (" + ex.Message + ")");
-            }
-        }
-
-        #endregion
-
-        public void IncludeRules(ICollection<string> strings)
-        {
-            includeItems.AddRange(strings);
-        }
-
-        public void ExcludeRules(ICollection<string> strings)
-        {
-            excludeItems.AddRange(strings);
-        }
-
-        public void ClearRules()
-        {
-            includeItems.Clear();
-            excludeItems.Clear();
         }
     }
 }

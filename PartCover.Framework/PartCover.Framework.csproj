@@ -100,6 +100,11 @@
     <Compile Include="Reports\IReportWriter.cs" />
     <Compile Include="Reports\NCoverReportWriter.cs" />
     <Compile Include="Reports\ReportReader.cs" />
+    <Compile Include="Settings\ConsoleWorkSettingsReader.cs" />
+    <Compile Include="Settings\SettingsException.cs" />
+    <Compile Include="Settings\WorkSettings.cs" />
+    <Compile Include="Settings\WorkSettingsReader.cs" />
+    <Compile Include="Settings\WorkSettingsWriter.cs" />
     <Compile Include="Stuff\IVisitable.cs" />
     <Compile Include="Stuff\Methods.cs" />
     <Compile Include="Stuff\Types.cs" />
@@ -109,9 +114,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Walkers\ReportException.cs" />
-    <Compile Include="WorkSettings.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="PartCover">

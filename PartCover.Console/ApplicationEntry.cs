@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using PartCover.Framework;
 using PartCover.Framework.Reports;
+using PartCover.Framework.Settings;
 using PartCover.Framework.Walkers;
 
 namespace PartCover
@@ -13,8 +14,9 @@ namespace PartCover
         {
             try
             {
-                WorkSettings settings = new WorkSettings();
-                if (!settings.InitializeFromCommandLine(args))
+                ConsoleWorkSettingsReader consoleReader = new ConsoleWorkSettingsReader(new WorkSettingsReader(), new WorkSettingsWriter());
+                WorkSettings settings = consoleReader.InitializeFromCommandLine(args);
+                if (null == settings)
                 {
                     return -1;
                 }
@@ -23,33 +25,11 @@ namespace PartCover
                 connector.OnEventMessage += connector_OnEventMessage;
                 connector.ProcessCallback.OnMessage += ProcessCallback_OnMessage;
 
-                connector.UseFileLogging(true);
-                connector.UsePipeLogging(false);
-                connector.SetLogging((Logging) settings.LogLevel);
+                SetupLoggingForConnector(settings, connector);
 
-                foreach (string item in settings.IncludeItems)
-                {
-                    try
-                    {
-                        connector.IncludeItem(item);
-                    }
-                    catch (ArgumentException)
-                    {
-                        LogError("Item '{0}' has wrong format", item);
-                    }
-                }
+                SetupIncludedItemsForConnector(settings, connector);
 
-                foreach (string item in settings.ExcludeItems)
-                {
-                    try
-                    {
-                        connector.ExcludeItem(item);
-                    }
-                    catch (ArgumentException)
-                    {
-                        LogError("Item '{0}' has wrong format", item);
-                    }
-                }
+                SetupExcludedItemsForConnector(settings, connector);
 
                 connector.StartTarget(
                     settings.TargetPath,
@@ -60,16 +40,7 @@ namespace PartCover
 
                 try
                 {
-                    IReportWriter reportWriter;
-                    if (settings.ReportFormat == "ncover")
-                    {
-                        reportWriter = new NCoverReportWriter();
-                    }
-                    else
-                    {
-                        reportWriter = new DefaultReportWriter();
-                    }
-
+                    IReportWriter reportWriter = GetReportWriter(settings);
                     if (settings.OutputToFile)
                     {
                         using (StreamWriter writer = File.CreateText(settings.FileNameForReport))
@@ -103,6 +74,57 @@ namespace PartCover
             }
 
             return 0;
+        }
+
+        private static void SetupLoggingForConnector(WorkSettings settings, Connector connector)
+        {
+            connector.UseFileLogging(true);
+            connector.UsePipeLogging(false);
+            connector.SetLogging((Logging) settings.LogLevel);
+        }
+
+        private static void SetupExcludedItemsForConnector(WorkSettings settings, Connector connector)
+        {
+            foreach (string item in settings.ExcludeItems)
+            {
+                try
+                {
+                    connector.ExcludeItem(item);
+                }
+                catch (ArgumentException)
+                {
+                    LogError("Item '{0}' has wrong format", item);
+                }
+            }
+        }
+
+        private static void SetupIncludedItemsForConnector(WorkSettings settings, Connector connector)
+        {
+            foreach (string item in settings.IncludeItems)
+            {
+                try
+                {
+                    connector.IncludeItem(item);
+                }
+                catch (ArgumentException)
+                {
+                    LogError("Item '{0}' has wrong format", item);
+                }
+            }
+        }
+
+        private static IReportWriter GetReportWriter(WorkSettings settings)
+        {
+            IReportWriter reportWriter;
+            if (settings.ReportFormat == "ncover")
+            {
+                reportWriter = new NCoverReportWriter();
+            }
+            else
+            {
+                reportWriter = new DefaultReportWriter();
+            }
+            return reportWriter;
         }
 
         private static void LogError(string format, params string[] args)
