@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using PartCover.Browser.Api.ReportItems;
 using PartCover.Framework.Walkers;
 

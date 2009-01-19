@@ -26,7 +26,7 @@ namespace PartCover.Browser.Features
             get { return reportFileName; }
         }
 
-        public void loadFromFile(string fileName)
+        public void LoadFromFile(string fileName)
         {
             CoverageReport report = new CoverageReport();
             ReportReader reportReader = new ReportReader();
@@ -44,7 +44,7 @@ namespace PartCover.Browser.Features
                 ReportClosing(this, EventArgs.Empty);
 
             CoverageReportWrapper wrapper = new CoverageReportWrapper(report);
-            wrapper.build();
+            wrapper.Build();
 
             reportFileName = null;
             reportWrapper = wrapper;
@@ -52,7 +52,7 @@ namespace PartCover.Browser.Features
                 ReportOpened(this, EventArgs.Empty);
         }
 
-        public void saveReport(string fileName)
+        public void SaveReport(string fileName)
         {
             DefaultReportWriter reportWriter = new DefaultReportWriter();
             using (StreamWriter writer = new StreamWriter(fileName))
@@ -62,18 +62,18 @@ namespace PartCover.Browser.Features
             }
         }
 
-        public void load(CoverageReport report)
+        public void Load(CoverageReport report)
         {
             setReport(report);
         }
 
-        public void attach(IServiceContainer container) { }
+        public void Attach(IServiceContainer container) { }
 
-        public void detach(IServiceContainer container) { }
+        public void Detach(IServiceContainer container) { }
 
-        public void build(IServiceContainer container) { }
+        public void Build(IServiceContainer container) { }
 
-        public void destroy(IServiceContainer container) { }
+        public void Destroy(IServiceContainer container) { }
 
     }
 }

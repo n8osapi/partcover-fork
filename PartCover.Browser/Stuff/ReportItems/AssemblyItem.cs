@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 using PartCover.Browser.Api.ReportItems;
 
 namespace PartCover.Browser.Stuff.ReportItems
@@ -16,12 +14,12 @@ namespace PartCover.Browser.Stuff.ReportItems
             this.name = name;
         }
 
-        public void addType(ClassItem item)
+        public void AddType(ClassItem item)
         {
             types.Add(item);
         }
 
-        public IClass[] getTypes()
+        public IClass[] GetTypes()
         {
             return types.ToArray();
         }
@@ -31,14 +29,14 @@ namespace PartCover.Browser.Stuff.ReportItems
             get { return name; }
         }
 
-        public NamespaceItem findNamespace(string name, NamespaceItem parentNamespace)
+        public NamespaceItem FindNamespace(string n, NamespaceItem parentNamespace)
         {
             return namespaces.Find(delegate(NamespaceItem actual) {
-                return actual.Parent == parentNamespace && actual.Name == name;
+                return actual.Parent == parentNamespace && actual.Name == n;
             });
         }
 
-        public void addNamespace(NamespaceItem namespaceItem)
+        public void AddNamespace(NamespaceItem namespaceItem)
         {
             namespaces.Add(namespaceItem);
         }

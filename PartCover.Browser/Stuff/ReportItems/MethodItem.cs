@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 using PartCover.Browser.Api.ReportItems;
-using System.Reflection;
 using PartCover.Framework.Walkers;
 
 namespace PartCover.Browser.Stuff.ReportItems
@@ -35,7 +32,7 @@ namespace PartCover.Browser.Stuff.ReportItems
             get { return variants == null ? new ICoveredVariant[0] : variants.ToArray(); }
         }
 
-        public void addBlock(CoveredVariantItem block)
+        public void AddBlock(CoveredVariantItem block)
         {
             if (variants == null)
                 variants = new List<CoveredVariantItem>();

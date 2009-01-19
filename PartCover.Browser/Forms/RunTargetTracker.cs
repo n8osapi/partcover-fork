@@ -1,14 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using PartCover.Browser.Stuff;
 using PartCover.Browser.Helpers;
 using PartCover.Framework.Walkers;
-using System.Diagnostics;
 using System.Globalization;
 
 namespace PartCover.Browser.Forms
@@ -24,7 +18,7 @@ namespace PartCover.Browser.Forms
             tssTime.Text = string.Empty;
         }
 
-        private void putText(string message, bool clearBeforePut)
+        private void PutText(string message, bool clearBeforePut)
         {
             if (clearBeforePut)
             {
@@ -37,59 +31,61 @@ namespace PartCover.Browser.Forms
         }
 
         private delegate void PutStringDelegate(string message);
-        public void setMessage(string message)
+        public void SetMessage(string message)
         {
             if (!IsHandleCreated) return;
 
             if (InvokeRequired)
             {
-                Invoke(new PutStringDelegate(setMessage), message);
+                Invoke(new PutStringDelegate(SetMessage), message);
                 return;
             }
 
-            putText(message, true);
+            PutText(message, true);
         }
 
-        public void queueBegin(string message)
+        public void QueueBegin(string message)
         {
             if (!IsHandleCreated) return;
 
             if (InvokeRequired)
             {
-                Invoke(new PutStringDelegate(queueBegin), message);
+                Invoke(new PutStringDelegate(QueueBegin), message);
                 return;
             }
 
-            putText(message, true);
+            PutText(message, true);
         }
 
-        public void queuePush(string message)
+        public void QueuePush(string message)
         {
             if (!IsHandleCreated) return;
 
             if (InvokeRequired)
             {
-                Invoke(new PutStringDelegate(queuePush), message);
+                Invoke(new PutStringDelegate(QueuePush), message);
                 return;
             }
-            putText(message, false);
+            PutText(message, false);
         }
 
-        public void queueEnd(string message)
+        public void QueueEnd(string message)
         {
             if (!IsHandleCreated) return;
 
             if (InvokeRequired)
             {
-                Invoke(new PutStringDelegate(queueEnd), message);
+                Invoke(new PutStringDelegate(QueueEnd), message);
                 return;
             }
-            putText(message, false);
+            PutText(message, false);
         }
 
-        public void setPercent(float value) { }
-
-        public float getPercent() { return 0; }
+        public float Percent
+        {
+            get { return 0; }
+            set { }
+        }
 
         protected override void BeforeStart()
         {
@@ -97,17 +93,17 @@ namespace PartCover.Browser.Forms
             timer.Enabled = true;
         }
 
-        public void add(CoverageReport.RunLogMessage runLogMessage)
+        public void Add(CoverageReport.RunLogMessage runLogMessage)
         {
-            putLogEntry(runLogMessage);
+            PutLogEntry(runLogMessage);
         }
 
         delegate void PutLogEntryDelegate(CoverageReport.RunLogMessage item);
-        private void putLogEntry(CoverageReport.RunLogMessage item)
+        private void PutLogEntry(CoverageReport.RunLogMessage item)
         {
             if (InvokeRequired)
             {
-                Invoke(new PutLogEntryDelegate(putLogEntry), item);
+                Invoke(new PutLogEntryDelegate(PutLogEntry), item);
                 return;
             }
 
@@ -117,9 +113,9 @@ namespace PartCover.Browser.Forms
 
         }
 
-        public void add(CoverageReport.RunHistoryMessage runHistoryMessage)
+        public void Add(CoverageReport.RunHistoryMessage runHistoryMessage)
         {
-            setMessage(runHistoryMessage.Message);
+            SetMessage(runHistoryMessage.Message);
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -128,16 +124,16 @@ namespace PartCover.Browser.Forms
 
             if (InvokeRequired)
             {
-                Invoke(new MethodInvoker(putTime));
+                Invoke(new MethodInvoker(PutTime));
 
             }
             else
             {
-                putTime();
+                PutTime();
             }
         }
 
-        private void putTime()
+        private void PutTime()
         {
             TimeSpan span = DateTime.Now - startedAt;
 

@@ -201,7 +201,6 @@
     <Compile Include="Features\Controls\TreeNodes.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Stuff\TargetRunnerCallback.cs" />
     <EmbeddedResource Include="Dialogs\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
       <SubType>Designer</SubType>

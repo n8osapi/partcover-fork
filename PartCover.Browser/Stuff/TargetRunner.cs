@@ -1,29 +1,29 @@
-using PartCover.Browser.Dialogs;
-using PartCover.Browser.Helpers;
-using PartCover.Framework.Walkers;
-using PartCover.Browser.Api;
 using System;
-using PartCover.Framework;
+using PartCover.Browser.Api;
 using PartCover.Browser.Forms;
+using PartCover.Browser.Helpers;
+using PartCover.Framework;
+using PartCover.Framework.Walkers;
 
 namespace PartCover.Browser.Stuff
 {
     internal interface IRunTargetProgressTracker : IProgressTracker
     {
-        void add(CoverageReport.RunLogMessage runLogMessage);
-        void add(CoverageReport.RunHistoryMessage runHistoryMessage);
+        void Add(CoverageReport.RunLogMessage runLogMessage);
+        void Add(CoverageReport.RunHistoryMessage runHistoryMessage);
     }
 
     internal class TargetRunner : AsyncUserProcess<RunTargetTracker, IRunTargetProgressTracker>
     {
+        private CoverageReport report;
         private RunTargetForm runTargetForm;
+
         public RunTargetForm RunTargetForm
         {
             get { return runTargetForm; }
             set { runTargetForm = value; }
         }
 
-        CoverageReport report;
         public CoverageReport Report
         {
             get { return report; }
@@ -31,11 +31,11 @@ namespace PartCover.Browser.Stuff
 
         protected override void doWork()
         {
-            Framework.Connector connector = new Framework.Connector();
-            connector.ProcessCallback.OnMessage += connectorOnMessage;
-            connector.OnEventMessage += connectorOnEventMessage;
+            Connector connector = new Connector();
+            connector.ProcessCallback.OnMessage += ConnectorOnMessage;
+            connector.OnEventMessage += ConnectorOnEventMessage;
 
-            Tracker.setMessage("Create connector");
+            Tracker.SetMessage("Create connector");
 
             if (runTargetForm.InvokeRequired)
             {
@@ -47,15 +47,14 @@ namespace PartCover.Browser.Stuff
             }
 
 
-            Tracker.setMessage("Store report");
+            Tracker.SetMessage("Store report");
             report = connector.BlockWalker.Report;
 
-            Tracker.setMessage("Done");
-            connector.OnEventMessage -= connectorOnEventMessage;
-            connector.ProcessCallback.OnMessage -= connectorOnMessage;
+            Tracker.SetMessage("Done");
+            connector.OnEventMessage -= ConnectorOnEventMessage;
+            connector.ProcessCallback.OnMessage -= ConnectorOnMessage;
         }
 
-        delegate void InitializeConnectorDelegate(Connector connector);
         private void InitializeConnector(Connector connector)
         {
             foreach (string s in runTargetForm.IncludeItems) connector.IncludeItem(s);
@@ -74,16 +73,22 @@ namespace PartCover.Browser.Stuff
         private event EventHandler<EventArgs<CoverageReport.RunHistoryMessage>> OnMessage;
         private event EventHandler<EventArgs<CoverageReport.RunLogMessage>> OnEventMessage;
 
-        void connectorOnEventMessage(object sender, EventArgs<CoverageReport.RunLogMessage> e)
+        private void ConnectorOnEventMessage(object sender, EventArgs<CoverageReport.RunLogMessage> e)
         {
             if (OnEventMessage != null) OnEventMessage(this, e);
-            Tracker.add(e.Data);
+            Tracker.Add(e.Data);
         }
 
-        void connectorOnMessage(object sender, EventArgs<CoverageReport.RunHistoryMessage> e)
+        private void ConnectorOnMessage(object sender, EventArgs<CoverageReport.RunHistoryMessage> e)
         {
             if (OnMessage != null) OnMessage(this, e);
-            Tracker.add(e.Data);
+            Tracker.Add(e.Data);
         }
+
+        #region Nested type: InitializeConnectorDelegate
+
+        private delegate void InitializeConnectorDelegate(Connector connector);
+
+        #endregion
     }
 }

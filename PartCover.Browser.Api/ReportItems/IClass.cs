@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PartCover.Browser.Api.ReportItems
 {
@@ -12,8 +9,8 @@ namespace PartCover.Browser.Api.ReportItems
 
         IAssembly Assembly { get;}
 
-        IMethod[] getMethods();
+        IMethod[] GetMethods();
 
-        INamespace[] getNamespaceChain();
+        INamespace[] GetNamespaceChain();
     }
 }

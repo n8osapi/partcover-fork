@@ -11,10 +11,10 @@ namespace PartCover.Browser.Api
         ICoverageReport Report { get;}
         string ReportFileName { get;}
 
-        void loadFromFile(string fileName);
+        void LoadFromFile(string fileName);
 
-        void saveReport(string fileName);
+        void SaveReport(string fileName);
 
-        void load(CoverageReport report);
+        void Load(CoverageReport report);
     }
 }

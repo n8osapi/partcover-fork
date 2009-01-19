@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Windows.Forms;
-using PartCover.Framework;
 using PartCover.Browser.Api;
 using PartCover.Browser.Dialogs;
 

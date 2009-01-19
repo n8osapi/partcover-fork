@@ -1,14 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using PartCover.Browser.Api;
-using System.IO;
 using PartCover.Framework.Walkers;
-using PartCover.Framework;
 using System.Globalization;
 
 namespace PartCover.Browser.Features.Views
@@ -24,13 +18,13 @@ namespace PartCover.Browser.Features.Views
         public override void attach(IServiceContainer container, IProgressTracker tracker)
         {
             base.attach(container, tracker);
-            tracker.setMessage("Load history data for view");
-            setData(Services.getService<ICoverageReportService>().Report, tracker);
+            tracker.SetMessage("Load history data for view");
+            setData(Services.GetService<ICoverageReportService>().Report, tracker);
         }
 
         public override void detach(IServiceContainer container, IProgressTracker tracker)
         {
-            tracker.setMessage("Unload history data");
+            tracker.SetMessage("Unload history data");
             removeItems();
             base.detach(container, tracker);
         }
@@ -58,35 +52,35 @@ namespace PartCover.Browser.Features.Views
             }
 
             Counter counter;
-            setExitCode(report.getExitCode());
+            setExitCode(report.GetExitCode());
             
-            ICollection<CoverageReport.RunHistoryMessage> history = report.getRunHistory();
+            ICollection<CoverageReport.RunHistoryMessage> history = report.GetRunHistory();
             counter = new Counter(history.Count);
 
-            tracker.queueBegin("Load run history ");
+            tracker.QueueBegin("Load run history ");
             foreach (CoverageReport.RunHistoryMessage item in history)
             {
                 addHistoryItem(new HistoryItemWrapper(item));
                 if (counter.next())
                 {
-                    tracker.queuePush(".");
+                    tracker.QueuePush(".");
                 }
             }
-            tracker.queueEnd(string.Empty);
+            tracker.QueueEnd(string.Empty);
 
-            ICollection<CoverageReport.RunLogMessage> log = report.getLogEvents();
+            ICollection<CoverageReport.RunLogMessage> log = report.GetLogEvents();
             counter = new Counter(log.Count);
 
-            tracker.queueBegin("Load log history ");
+            tracker.QueueBegin("Load log history ");
             foreach (CoverageReport.RunLogMessage item in log)
             {
                 addLogItem(item);
                 if (counter.next())
                 {
-                    tracker.queuePush(".");
+                    tracker.QueuePush(".");
                 }
             }
-            tracker.queueEnd(string.Empty);
+            tracker.QueueEnd(string.Empty);
         }
 
         private delegate void AddHistoryItem(HistoryItemWrapper historyItemWrapper);

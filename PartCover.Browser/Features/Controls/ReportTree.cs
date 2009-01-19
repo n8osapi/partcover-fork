@@ -37,23 +37,23 @@ namespace PartCover.Browser.Controls
 
         private void adviseEvents()
         {
-            serviceContainer.getService<ICoverageReportService>().ReportClosing += onReportClosing;
-            serviceContainer.getService<ICoverageReportService>().ReportOpened += onReportOpened;
-            serviceContainer.getService<IReportItemSelectionService>().SelectionChanged += onSelectionChanged;
+            serviceContainer.GetService<ICoverageReportService>().ReportClosing += onReportClosing;
+            serviceContainer.GetService<ICoverageReportService>().ReportOpened += onReportOpened;
+            serviceContainer.GetService<IReportItemSelectionService>().SelectionChanged += onSelectionChanged;
         }
 
         private void unadviseEvents()
         {
-            serviceContainer.getService<ICoverageReportService>().ReportClosing -= onReportClosing;
-            serviceContainer.getService<ICoverageReportService>().ReportOpened -= onReportOpened;
-            serviceContainer.getService<IReportItemSelectionService>().SelectionChanged -= onSelectionChanged;
+            serviceContainer.GetService<ICoverageReportService>().ReportClosing -= onReportClosing;
+            serviceContainer.GetService<ICoverageReportService>().ReportOpened -= onReportOpened;
+            serviceContainer.GetService<IReportItemSelectionService>().SelectionChanged -= onSelectionChanged;
         }
 
         void onSelectionChanged(object sender, EventArgs e)
         {
             if (selecting) return;
 
-            IReportItem item = serviceContainer.getService<IReportItemSelectionService>().SelectedItem;
+            IReportItem item = serviceContainer.GetService<IReportItemSelectionService>().SelectedItem;
 
             TreeNode selectedNode = null;
             if (item is INamespace)
@@ -80,21 +80,21 @@ namespace PartCover.Browser.Controls
         {
             BeginUpdate();
 
-            ICoverageReport report = serviceContainer.getService<ICoverageReportService>().Report;
+            ICoverageReport report = serviceContainer.GetService<ICoverageReportService>().Report;
 
-            foreach (IAssembly assembly in report.getAssemblies())
+            foreach (IAssembly assembly in report.GetAssemblies())
             {
                 AssemblyTreeNode asmNode = new AssemblyTreeNode(assembly);
                 Nodes.Add(asmNode);
 
-                foreach (IClass dType in assembly.getTypes())
+                foreach (IClass dType in assembly.GetTypes())
                 {
                     TreeNode namespaceNode = GetNamespaceNode(asmNode, dType);
                     ClassTreeNode classNode = new ClassTreeNode(dType);
                     namespaceNode.Nodes.Add(classNode);
 
                     Dictionary<string, PropertyTreeNode> props = new Dictionary<string, PropertyTreeNode>();
-                    foreach (IMethod md in dType.getMethods())
+                    foreach (IMethod md in dType.GetMethods())
                     {
                         if (!Methods.isSpecial(md.Flags))
                         {
@@ -223,7 +223,7 @@ namespace PartCover.Browser.Controls
 
         private static TreeNode GetNamespaceNode(TreeNode asmNode, IClass iClass)
         {
-            INamespace[] names = iClass.getNamespaceChain();
+            INamespace[] names = iClass.GetNamespaceChain();
             TreeNode parentNode = asmNode;
             for (int i = 0; i < names.Length; ++i)
             {
@@ -247,7 +247,7 @@ namespace PartCover.Browser.Controls
             if (selecting) return;
             selecting = true;
 
-            IReportItemSelectionService service = serviceContainer.getService<IReportItemSelectionService>();
+            IReportItemSelectionService service = serviceContainer.GetService<IReportItemSelectionService>();
             if (e.Node is MethodTreeNode)
             {
                 service.select(((MethodTreeNode)e.Node).Method);
@@ -308,7 +308,7 @@ namespace PartCover.Browser.Controls
         {
             TreeNodeCollection nodes;
 
-            INamespace[] namespaces = iClass.getNamespaceChain();
+            INamespace[] namespaces = iClass.GetNamespaceChain();
             if (namespaces.Length > 0)
             {
                 nodes = FindNode(namespaces[namespaces.Length - 1]).Nodes;

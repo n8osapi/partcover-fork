@@ -8,16 +8,16 @@ namespace PartCover.Browser.Api
 {
     public interface ICoverageReport
     {
-        IAssembly[] getAssemblies();
+        IAssembly[] GetAssemblies();
 
-        string getFilePath(uint file);
+        string GetFilePath(uint file);
 
-        void forEachBlock(Action<CoverageReport.InnerBlock> blockReceiver);
+        void ForEachBlock(Action<CoverageReport.InnerBlock> blockReceiver);
 
-        ICollection<CoverageReport.RunHistoryMessage> getRunHistory();
+        ICollection<CoverageReport.RunHistoryMessage> GetRunHistory();
 
-        ICollection<CoverageReport.RunLogMessage> getLogEvents();
+        ICollection<CoverageReport.RunLogMessage> GetLogEvents();
 
-        int? getExitCode();
+        int? GetExitCode();
     }
 }

@@ -1,15 +1,13 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 using PartCover.Browser.Api;
 
 namespace PartCover.Browser
 {
     internal class ApplicationHost : IServiceContainer
     {
-        private List<object> services = new List<object>();
+        private readonly List<object> services = new List<object>();
 
-        public T getService<T>() where T : class
+        public T GetService<T>() where T : class
         {
             lock (services)
             {
@@ -22,7 +20,7 @@ namespace PartCover.Browser
             return null;
         }
 
-        public bool registerService<T>(T service) where T : class
+        public bool RegisterService<T>(T service) where T : class
         {
             lock (services)
             {
@@ -34,7 +32,7 @@ namespace PartCover.Browser
             }
         }
 
-        public bool unregisterService<T>(T service) where T : class
+        public bool UnregisterService<T>(T service) where T : class
         {
             lock (services)
             {
@@ -45,34 +43,34 @@ namespace PartCover.Browser
             }
         }
 
-        public void build()
+        public void Build()
         {
             lock (services)
             {
                 foreach (object o in services.ToArray())
                 {
-                    if (o is IFeature) ((IFeature)o).attach(this);
+                    if (o is IFeature) ((IFeature)o).Attach(this);
                 }
 
                 foreach (object o in services.ToArray())
                 {
-                    if (o is IFeature) ((IFeature)o).build(this);
+                    if (o is IFeature) ((IFeature)o).Build(this);
                 }
             }
         }
 
-        public void destroy()
+        public void Destroy()
         {
             lock (services)
             {
                 foreach (object o in services.ToArray())
                 {
-                    if (o is IFeature) ((IFeature)o).destroy(this);
+                    if (o is IFeature) ((IFeature)o).Destroy(this);
                 }
 
                 foreach (object o in services.ToArray())
                 {
-                    if (o is IFeature) ((IFeature)o).detach(this);
+                    if (o is IFeature) ((IFeature)o).Detach(this);
                 }
                 services.Clear();
             }

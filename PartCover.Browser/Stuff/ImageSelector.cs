@@ -3,7 +3,6 @@ using System.Reflection;
 
 using PartCover.Browser.Resources;
 using PartCover.Framework.Stuff;
-using PartCover.Framework.Walkers;
 using PartCover.Browser.Api.ReportItems;
 
 namespace PartCover.Browser.Stuff

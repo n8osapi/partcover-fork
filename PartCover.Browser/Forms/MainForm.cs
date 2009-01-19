@@ -45,7 +45,7 @@ namespace PartCover.Browser
                 return;
 
             CloseViews();
-            ServiceContainer.getService<ICoverageReportService>().loadFromFile(dlgOpen.FileName);
+            ServiceContainer.GetService<ICoverageReportService>().LoadFromFile(dlgOpen.FileName);
         }
 
         private void mmFileExit_Click(object sender, EventArgs e)
@@ -58,7 +58,7 @@ namespace PartCover.Browser
         {
             if (dlgSave.ShowDialog(this) != DialogResult.OK)
                 return;
-            ServiceContainer.getService<ICoverageReportService>().saveReport(dlgSave.FileName);
+            ServiceContainer.GetService<ICoverageReportService>().SaveReport(dlgSave.FileName);
         }
 
         readonly RunTargetForm runTargetForm = new RunTargetForm();
@@ -108,7 +108,7 @@ namespace PartCover.Browser
             }
             else
             {
-                ServiceContainer.getService<ICoverageReportService>().load(runner.Report);
+                ServiceContainer.GetService<ICoverageReportService>().Load(runner.Report);
             }
         }
 
@@ -156,19 +156,19 @@ namespace PartCover.Browser
 
         private void MakeHtmlPreview(string transform)
         {
-            if (ServiceContainer.getService<ICoverageReportService>().ReportFileName == null)
+            if (ServiceContainer.GetService<ICoverageReportService>().ReportFileName == null)
             {
                 mmFileSaveAs.PerformClick();
             }
 
-            if (ServiceContainer.getService<ICoverageReportService>().ReportFileName == null)
+            if (ServiceContainer.GetService<ICoverageReportService>().ReportFileName == null)
                 return;
 
             TinyAsyncUserProcess asyncProcess = new TinyAsyncUserProcess();
             asyncProcess.Action = delegate(IProgressTracker tracker)
             {
                 HtmlPreview.DoTransform(tracker,
-                    ServiceContainer.getService<ICoverageReportService>().ReportFileName, 
+                    ServiceContainer.GetService<ICoverageReportService>().ReportFileName, 
                     transform);
             };
 
@@ -176,7 +176,7 @@ namespace PartCover.Browser
 
         }
 
-        public void add(IReportViewFactory factory)
+        public void Add(IReportViewFactory factory)
         {
             viewFactories.Add(factory, null);
             miViews.MenuItems.Add(factory.ViewName, delegate
@@ -185,7 +185,7 @@ namespace PartCover.Browser
             });
         }
 
-        public void remove(IReportViewFactory factory)
+        public void Remove(IReportViewFactory factory)
         {
             viewFactories.Remove(factory);
         }
@@ -229,7 +229,7 @@ namespace PartCover.Browser
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            showView(ServiceContainer.getService<Features.FeatureViewCoverage>());
+            showView(ServiceContainer.GetService<Features.FeatureViewCoverage>());
         }
 
         private void miAbout_Click(object sender, EventArgs e)

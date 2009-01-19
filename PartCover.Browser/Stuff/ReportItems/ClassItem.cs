@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 using PartCover.Browser.Api.ReportItems;
 using PartCover.Framework.Walkers;
@@ -21,12 +19,12 @@ namespace PartCover.Browser.Stuff.ReportItems
             this.iAssembly = iAssembly;
         }
 
-        public void addMethod(MethodItem item)
+        public void AddMethod(MethodItem item)
         {
             methods.Add(item);
         }
 
-        public IMethod[] getMethods()
+        public IMethod[] GetMethods()
         {
             return methods.ToArray();
         }
@@ -58,7 +56,7 @@ namespace PartCover.Browser.Stuff.ReportItems
             get { return iAssembly; }
         }
 
-        public INamespace[] getNamespaceChain()
+        public INamespace[] GetNamespaceChain()
         {
             List<NamespaceItem> items = new List<NamespaceItem>();
 

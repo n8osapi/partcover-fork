@@ -1,6 +1,5 @@
 using System;
 using PartCover.Browser.Helpers;
-using PartCover.Framework;
 using PartCover.Browser.Api;
 using System.Windows.Forms;
 
@@ -15,55 +14,52 @@ namespace PartCover.Browser.Dialogs
 
         private delegate void StringSetter(string value);
 
-        public void putDate() {
+        public void PutDate() {
             if (InvokeRequired)
             {
-                Invoke(new MethodInvoker(putDate));
+                Invoke(new MethodInvoker(PutDate));
                 return;
             }
 
             tbText.AppendText(DateTime.Now.ToString() + " ");
         }
 
-        public void putText(string message) {
+        public void PutText(string message) {
             if (InvokeRequired)
             {
-                Invoke(new StringSetter(putText), message);
+                Invoke(new StringSetter(PutText), message);
                 return;
             }
 
             tbText.AppendText(message);
         }
 
-        public void setMessage(string value)
+        public void SetMessage(string value)
         {
-            putDate();
-            putText(value + Environment.NewLine);
+            PutDate();
+            PutText(value + Environment.NewLine);
         }
 
-        public void setPercent(float value)
+        public float Percent
         {
+            get { return 0; }
+            set { }
         }
 
-        public float getPercent()
+        public void QueueBegin(string message)
         {
-            return 0;
+            PutDate();
+            PutText(message);
         }
 
-        public void queueBegin(string message)
+        public void QueuePush(string message)
         {
-            putDate();
-            putText(message);
+            PutText(message);
         }
 
-        public void queuePush(string message)
+        public void QueueEnd(string message)
         {
-            putText(message);
-        }
-
-        public void queueEnd(string message)
-        {
-            putText(message + Environment.NewLine);
+            PutText(message + Environment.NewLine);
         }
     }
 }

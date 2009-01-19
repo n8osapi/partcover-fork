@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 using PartCover.Browser.Api;
-using PartCover.Browser.Api.ReportItems;
 
 namespace PartCover.Browser.Features
 {
@@ -11,20 +8,20 @@ namespace PartCover.Browser.Features
         : IFeature
         , IReportItemSelectionService
     {
-        public void attach(IServiceContainer container) { }
+        public void Attach(IServiceContainer container) { }
 
-        public void detach(IServiceContainer container) { }
+        public void Detach(IServiceContainer container) { }
 
-        public void build(IServiceContainer container)
+        public void Build(IServiceContainer container)
         {
-            container.getService<ICoverageReportService>().ReportClosing += onReportClosing;
-            container.getService<ICoverageReportService>().ReportOpened += onReportOpened;
+            container.GetService<ICoverageReportService>().ReportClosing += onReportClosing;
+            container.GetService<ICoverageReportService>().ReportOpened += onReportOpened;
         }
 
-        public void destroy(IServiceContainer container)
+        public void Destroy(IServiceContainer container)
         {
-            container.getService<ICoverageReportService>().ReportClosing -= onReportClosing;
-            container.getService<ICoverageReportService>().ReportOpened -= onReportOpened;
+            container.GetService<ICoverageReportService>().ReportClosing -= onReportClosing;
+            container.GetService<ICoverageReportService>().ReportOpened -= onReportOpened;
         }
 
         private IReportItem selectedItem;

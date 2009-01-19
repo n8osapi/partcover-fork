@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 
 using PartCover.Browser.Api;
@@ -34,20 +31,20 @@ namespace PartCover.Browser.Features.Views
         public override void attach(IServiceContainer container, IProgressTracker tracker)
         {
             base.attach(container, tracker);
-            tracker.setMessage("Advise for selection events");
-            Services.getService<IReportItemSelectionService>().SelectionChanged += ReportItemSelectionChanged;
+            tracker.SetMessage("Advise for selection events");
+            Services.GetService<IReportItemSelectionService>().SelectionChanged += ReportItemSelectionChanged;
         }
 
         public override void detach(IServiceContainer container, IProgressTracker tracker)
         {
-            tracker.setMessage("Unadvise for selection events");
-            Services.getService<IReportItemSelectionService>().SelectionChanged -= ReportItemSelectionChanged;
+            tracker.SetMessage("Unadvise for selection events");
+            Services.GetService<IReportItemSelectionService>().SelectionChanged -= ReportItemSelectionChanged;
             base.detach(container, tracker);
         }
 
         void ReportItemSelectionChanged(object sender, EventArgs e)
         {
-            IReportItemSelectionService service = Services.getService<IReportItemSelectionService>();
+            IReportItemSelectionService service = Services.GetService<IReportItemSelectionService>();
 
             if (service.SelectedItem is IMethod)
             {
@@ -138,7 +135,7 @@ namespace PartCover.Browser.Features.Views
 
         private void ParseFile(uint file, IEnumerable<CoverageReport.InnerBlock> filePoints)
         {
-            string filePath = Services.getService<ICoverageReportService>().Report.getFilePath(file);
+            string filePath = Services.GetService<ICoverageReportService>().Report.GetFilePath(file);
             if (filePath == null || !File.Exists(filePath))
                 return;
 
@@ -172,7 +169,7 @@ namespace PartCover.Browser.Features.Views
             {
                 bList = new List<CoverageReport.InnerBlock>();
 
-                Services.getService<ICoverageReportService>().Report.forEachBlock(
+                Services.GetService<ICoverageReportService>().Report.ForEachBlock(
                     delegate(CoverageReport.InnerBlock bd)
                     {
                         if (bd.fileId == file) bList.Add(bd);

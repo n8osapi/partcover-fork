@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using PartCover.Browser.Api;
 
 namespace PartCover.Browser.Features
@@ -14,24 +11,24 @@ namespace PartCover.Browser.Features
             get { return mainForm; }
         }
 
-        public void attach(IServiceContainer container)
+        public void Attach(IServiceContainer container)
         {
             mainForm = new MainForm();
             mainForm.ServiceContainer = container;
 
-            container.registerService(mainForm);
+            container.RegisterService(mainForm);
         }
 
-        public void detach(IServiceContainer container)
+        public void Detach(IServiceContainer container)
         {
-            container.unregisterService(mainForm);
+            container.UnregisterService(mainForm);
 
             mainForm.ServiceContainer = null;
             mainForm = null;
         }
 
-        public void build(IServiceContainer container) { }
+        public void Build(IServiceContainer container) { }
 
-        public void destroy(IServiceContainer container) { }
+        public void Destroy(IServiceContainer container) { }
     }
 }

@@ -39,18 +39,18 @@ namespace PartCover.Browser.Stuff
         {
             string xsltFilePath = Path.Combine(XsltDir, transform + XsltExt);
 
-            tracker.setMessage("Load xslt file " + xsltFilePath);
+            tracker.SetMessage("Load xslt file " + xsltFilePath);
             XslCompiledTransform tran = new XslCompiledTransform(false);
             tran.Load(xsltFilePath);
 
-            tracker.setMessage("Transform report xml file");
+            tracker.SetMessage("Transform report xml file");
             string outputFile = Path.GetTempFileName() + ".html";
             tran.Transform(inputFile, outputFile);
 
-            tracker.setMessage("Open html report");
+            tracker.SetMessage("Open html report");
             Process.Start(outputFile);
 
-            tracker.setMessage("Done");
+            tracker.SetMessage("Done");
         }
     }
 }
